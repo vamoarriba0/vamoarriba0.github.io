@@ -63,6 +63,22 @@
   .lc .tilde{width:100%;border:0;background:var(--azul);color:#fff;font-weight:700;font-size:14px;padding:10px 0;cursor:pointer}
   .lc .p.ok{opacity:.45} .lc .p.ok .tilde{background:var(--verde)}
   .vacio{text-align:center;color:var(--gris);padding:40px 10px}
+  /* lista tipo Keep */
+  .card.nuevo{padding:12px}
+  .kgrupo{background:#fff;border-radius:14px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(29,90,166,.08)}
+  .ktit{background:var(--azul);color:#fff;font-weight:800;font-size:15px;padding:9px 14px;display:flex;justify-content:space-between}
+  .ktit span{background:#fff;color:var(--azul);border-radius:999px;padding:0 9px;font-size:13px}
+  .kitem{display:flex;align-items:center;gap:10px;padding:9px 10px 9px 12px;border-top:1px solid #e3ecf6}
+  .kcheck{flex:0 0 auto;width:26px;height:26px;border-radius:7px;border:2px solid var(--azul);background:#fff;color:#fff;font-weight:900;font-size:16px;cursor:pointer}
+  .kitem.hecho .kcheck{background:var(--azul)}
+  .kitem img{width:42px;height:62px;object-fit:cover;border-radius:6px;background:#dcebf8;flex:0 0 auto;cursor:zoom-in}
+  .ktxt{flex:1;min-width:0;cursor:pointer}
+  .ktxt b{display:block;font-size:15px}
+  .ktxt small{display:block;font-size:12.5px;color:var(--azul-osc)}
+  .ktxt .kmeta{color:var(--gris)}
+  .kitem.hecho .ktxt{opacity:.45;text-decoration:line-through}
+  .kitem.hecho img{opacity:.45}
+  .kx{background:none;border:0;color:var(--gris);font-size:22px;cursor:pointer;padding:2px 6px}
   .toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:var(--azul);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center}
   .toast.ver{opacity:1}
 </style>
@@ -73,8 +89,9 @@
   <div class="top"><img src="logo.png" alt=""><div><b>Vamo' Arriba</b><small>Administración</small></div></div>
   <div class="franjas"></div>
   <div class="tabs" id="tabs" style="display:none">
-    <button class="tab activo" id="tSubir" onclick="tab('subir')">📸 Subir fotos</button>
-    <button class="tab" id="tLista" onclick="tab('lista')">📋 Lista de compras</button>
+    <button class="tab activo" id="tSubir" onclick="tab('subir')">📸 Subir</button>
+    <button class="tab" id="tKeep" onclick="tab('keep')">📝 Lista</button>
+    <button class="tab" id="tHora" onclick="tab('hora')">⏰ Horarios</button>
   </div>
 </header>
 
@@ -118,9 +135,40 @@
 </div>
 
 <!-- Lista de compras -->
-<div class="sec" id="secLista" style="display:none">
-  <div class="dias" id="dias"></div>
-  <div class="lc" id="lc"></div>
+<!-- Lista tipo Keep -->
+<div class="sec" id="secKeep" style="display:none">
+  <div class="card nuevo">
+    <input type="text" id="kTexto" placeholder="Agregar algo a la lista…" onkeydown="if(event.key==='Enter')kAgregar()">
+    <div class="fila" style="margin-top:8px">
+      <select id="kCat" class="sel"></select>
+      <button class="chip activo" onclick="kAgregar()">＋ Agregar</button>
+    </div>
+  </div>
+  <div class="fila" style="justify-content:space-between;margin:0 2px 10px">
+    <span class="info" id="kResumen" style="margin:0"></span>
+    <button class="chip chico" onclick="cargarKeep()">🔄 Actualizar</button>
+  </div>
+  <div id="keep"></div>
+  <button class="btn sec2" id="kLimpiar" style="margin-top:6px;display:none" onclick="kLimpiar()">🗑 Borrar lo tildado</button>
+</div>
+
+<!-- Horarios -->
+<div class="sec" id="secHora" style="display:none">
+  <div class="card">
+    <h2>⏰ Cierre de pedidos</h2>
+    <p class="info">En el catálogo aparece "Pedidos hasta las 18:00 · Quedan 2 h 15 min".</p>
+    <div class="fila"><input type="time" id="hCierre" class="sel"><input type="date" id="hCierreFecha" class="sel"></div>
+    <p class="info">La fecha es opcional: si la dejás vacía, vale para hoy.</p>
+  </div>
+  <div class="card">
+    <h2>🇺🇾 Próximo viaje a Uruguay</h2>
+    <p class="info">En el catálogo aparece con los días que faltan.</p>
+    <input type="date" id="hViaje" class="sel" style="width:100%">
+  </div>
+  <button class="btn" onclick="guardarHorarios()">Guardar</button>
+  <div style="height:8px"></div>
+  <button class="btn sec2" onclick="$('hCierre').value='';$('hCierreFecha').value='';$('hViaje').value='';guardarHorarios()">Sacar los dos del catálogo</button>
+  <p class="info" id="hEstado" style="text-align:center"></p>
 </div>
 
 <div class="pie" id="pie" style="display:none">
@@ -154,18 +202,99 @@
   }
   if (CLAVE) entrar();
 
+  const NOMBRE = c => c === 'Niño' ? 'Infantil' : c;      // cómo se muestra cada categoría
   function tab(t){
-    $('tSubir').classList.toggle('activo', t === 'subir');
-    $('tLista').classList.toggle('activo', t === 'lista');
-    $('secSubir').style.display = t === 'subir' ? 'block' : 'none';
-    $('secLista').style.display = t === 'lista' ? 'block' : 'none';
+    [['subir','tSubir','secSubir'],['keep','tKeep','secKeep'],['hora','tHora','secHora']].forEach(([k, b, s]) => {
+      $(b).classList.toggle('activo', t === k); $(s).style.display = t === k ? 'block' : 'none';
+    });
     $('pie').style.display = t === 'subir' && fotos.length ? 'block' : 'none';
-    if (t === 'lista') cargarLista();
+    if (t === 'keep') cargarKeep();
+    if (t === 'hora') cargarHorarios();
+  }
+
+  /* ---------- Lista tipo Keep ---------- */
+  let KEEP = [];
+  function cargarKeep(){
+    $('kCat').innerHTML = [...CATS, 'Otros'].map(c => `<option value="${c}">${NOMBRE(c)}</option>`).join('');
+    if (!KEEP.length) $('keep').innerHTML = '<div class="vacio">Cargando… 🧉</div>';
+    fetch(`${API}?api=keep&clave=${encodeURIComponent(CLAVE)}&t=${Date.now()}`).then(r => r.json()).then(d => {
+      if (d.error) { $('keep').innerHTML = '<div class="vacio">No se pudo cargar (' + d.error + ')</div>'; return; }
+      KEEP = d.items || []; pintarKeep();
+    }).catch(() => { $('keep').innerHTML = '<div class="vacio">No se pudo cargar. Probá de nuevo.</div>'; });
+  }
+  function pintarKeep(){
+    const orden = [...CATS, 'Otros'];
+    const grupos = {};
+    KEEP.forEach(x => { const c = orden.includes(x.cat) ? x.cat : 'Otros'; (grupos[c] = grupos[c] || []).push(x); });
+    const pend = KEEP.filter(x => !x.hecho).length;
+    $('kResumen').textContent = KEEP.length ? `${pend} por comprar · ${KEEP.length - pend} tildados` : '';
+    $('kLimpiar').style.display = KEEP.some(x => x.hecho) ? 'block' : 'none';
+    if (!KEEP.length) { $('keep').innerHTML = '<div class="vacio">La lista está vacía.<br>Los pedidos de la página entran solos acá.</div>'; return; }
+    $('keep').innerHTML = orden.filter(c => grupos[c]).map(c => {
+      const items = grupos[c].slice().sort((a, b) => (a.hecho - b.hecho) || (a.f - b.f));
+      return `<div class="kgrupo"><div class="ktit">${NOMBRE(c)} <span>${grupos[c].filter(x => !x.hecho).length}</span></div>
+        ${items.map(x => {
+          const titulo = x.origen === 'manual' ? x.texto : (x.tipo || 'Prenda');
+          const det = x.origen === 'manual' ? '' : [x.talle && 'Talle ' + x.talle, x.color, x.p ? '$' + Number(x.p).toLocaleString('es-AR') : ''].filter(Boolean).join(' · ');
+          return `<div class="kitem ${x.hecho ? 'hecho' : ''}">
+            <button class="kcheck" onclick="kTildar('${x.id}')" aria-label="Tildar">${x.hecho ? '✓' : ''}</button>
+            ${x.img ? `<img src="${img(x.img, 200)}" alt="" onclick="window.open('${img(x.img, 1200)}','_blank')">` : ''}
+            <div class="ktxt" onclick="kTildar('${x.id}')"><b>${titulo.replace(/</g,'&lt;')}</b>
+              ${det ? `<small>${det}</small>` : ''}
+              ${x.u || x.c ? `<small class="kmeta">${[x.u, x.c].filter(Boolean).join(' · ')}</small>` : ''}</div>
+            <button class="kx" onclick="kBorrar('${x.id}')" aria-label="Borrar">×</button>
+          </div>`;
+        }).join('')}</div>`;
+    }).join('');
+  }
+  function kPost(datos){
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ accion: 'keep', clave: CLAVE }, datos)) }).then(r => r.json());
+  }
+  function kTildar(id){
+    const x = KEEP.find(k => k.id === id); if (!x) return;
+    x.hecho = !x.hecho; pintarKeep();
+    kPost({ que: 'tildar', id, hecho: x.hecho }).then(d => { if (!d.ok) throw 0; })
+      .catch(() => { x.hecho = !x.hecho; pintarKeep(); toast('No se pudo guardar, probá de nuevo'); });
+  }
+  function kBorrar(id){
+    if (!confirm('¿Borrar este ítem de la lista?')) return;
+    const antes = KEEP.slice(); KEEP = KEEP.filter(k => k.id !== id); pintarKeep();
+    kPost({ que: 'borrar', id }).then(d => { if (!d.ok) throw 0; }).catch(() => { KEEP = antes; pintarKeep(); toast('No se pudo borrar'); });
+  }
+  function kAgregar(){
+    const texto = $('kTexto').value.trim(); if (!texto) return;
+    const cat = $('kCat').value;
+    const tmp = { id: 'tmp' + Date.now(), origen: 'manual', texto, cat, hecho: false, f: Date.now() };
+    KEEP.push(tmp); pintarKeep(); $('kTexto').value = ''; $('kTexto').focus();
+    kPost({ que: 'agregar', texto, cat }).then(d => { if (!d.ok) throw 0; tmp.id = d.id; pintarKeep(); })
+      .catch(() => { KEEP = KEEP.filter(k => k !== tmp); pintarKeep(); toast('No se pudo agregar'); });
+  }
+  function kLimpiar(){
+    if (!confirm('¿Borrar todo lo tildado?')) return;
+    KEEP = KEEP.filter(k => !k.hecho); pintarKeep();
+    kPost({ que: 'limpiar' }).then(() => cargarKeep()).catch(() => cargarKeep());
+  }
+
+  /* ---------- Horarios ---------- */
+  function cargarHorarios(){
+    $('hEstado').textContent = 'Cargando…';
+    fetch(`${API}?api=horarios&clave=${encodeURIComponent(CLAVE)}&t=${Date.now()}`).then(r => r.json()).then(d => {
+      $('hCierre').value = d.cierre || ''; $('hCierreFecha').value = d.cierreFecha || ''; $('hViaje').value = d.viaje || '';
+      $('hEstado').textContent = '';
+    }).catch(() => { $('hEstado').textContent = 'No se pudo cargar.'; });
+  }
+  function guardarHorarios(){
+    $('hEstado').textContent = 'Guardando…';
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ accion: 'horarios', clave: CLAVE, cierre: $('hCierre').value, cierreFecha: $('hCierreFecha').value, viaje: $('hViaje').value }) })
+      .then(r => r.json()).then(d => { if (!d.ok) throw 0; $('hEstado').textContent = '✅ Guardado. Ya se ve en el catálogo.'; })
+      .catch(() => { $('hEstado').textContent = '⚠️ No se pudo guardar. Probá de nuevo.'; });
   }
 
   /* ---------- Subir fotos ---------- */
   function pintarCats(){
-    $('cats').innerHTML = CATS.map(c => `<button class="chip ${c===cat?'activo':''}" onclick="elegirCat('${c}')">${c}</button>`).join('');
+    $('cats').innerHTML = CATS.map(c => `<button class="chip ${c===cat?'activo':''}" onclick="elegirCat('${c}')">${NOMBRE(c)}</button>`).join('');
   }
   function elegirCat(c){ cat = c; pintarCats(); actualizarPie(); }
 
@@ -271,33 +400,6 @@
     if (!errores) setTimeout(() => { fotos = []; pintarFotos(); $('progreso').style.display = 'none'; $('barraProg').style.width = '0'; }, 2500);
   }
 
-  /* ---------- Lista de compras ---------- */
-  function cargarLista(){
-    $('dias').innerHTML = [1,3,7].map(d => `<button class="chip ${d===diasLista?'activo':''}" onclick="diasLista=${d};cargarLista()">${d===1?'Hoy':d+' días'}</button>`).join('')
-      + `<button class="chip" style="margin-left:auto" onclick="cargarLista()">🔄 Actualizar</button>`;
-    $('lc').innerHTML = '<div class="vacio" style="grid-column:1/-1">Cargando… 🧉</div>';
-    fetch(`${API}?api=lista&dias=${diasLista}&clave=${encodeURIComponent(CLAVE)}&t=${Date.now()}`).then(r => r.json()).then(d => {
-      const L = d.lista || [];
-      if (!L.length) { $('lc').innerHTML = '<div class="vacio" style="grid-column:1/-1">Todavía no hay pedidos en este período</div>'; return; }
-      window.LISTA = {}; L.forEach(x => LISTA[x.c] = x);
-      $('lc').innerHTML = L.map(x => {
-        const cnt = {}, users = new Set();
-        x.pedidos.forEach(p => { const k = [p.t && 'Talle ' + p.t, p.col].filter(Boolean).join(' · ') || 'Sin talle'; cnt[k] = (cnt[k]||0) + 1; if (p.u) users.add(p.u); });
-        const lineas = Object.entries(cnt).map(([k, n]) => k + (n > 1 ? ` <b>×${n}</b>` : '')).join('<br>');
-        return `<div class="p ${x.comprada?'ok':''}" id="c_${x.c}">
-          <img loading="lazy" src="${img(x.id,500)}" alt="">
-          <span class="cod">${x.c}</span><span class="cuenta">${x.pedidos.length} 🛍</span>
-          <div class="det">${lineas}${users.size ? `<br><small>${[...users].join(', ')}</small>` : ''}${x.p ? `<br><small>$${Number(x.p).toLocaleString('es-AR')}</small>` : ''}</div>
-          <button class="tilde" onclick="tildar('${x.c}')">${x.comprada ? '✓ Comprada' : 'Marcar comprada'}</button></div>`;
-      }).join('');
-    }).catch(() => { $('lc').innerHTML = '<div class="vacio" style="grid-column:1/-1">No se pudo cargar. Probá de nuevo.</div>'; });
-  }
-  function tildar(c){
-    const x = LISTA[c]; x.comprada = !x.comprada;
-    const el = $('c_' + c); el.classList.toggle('ok', x.comprada);
-    el.querySelector('.tilde').textContent = x.comprada ? '✓ Comprada' : 'Marcar comprada';
-    fetch(`${API}?api=marcar&c=${c}&v=${x.comprada?1:0}&clave=${encodeURIComponent(CLAVE)}`).catch(() => toast('No se pudo guardar, probá de nuevo'));
-  }
   function toast(t){ const el = $('toast'); el.textContent = t; el.classList.add('ver'); setTimeout(() => el.classList.remove('ver'), 2400); }
 </script>
 </body>
