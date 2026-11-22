@@ -237,7 +237,7 @@
   <path d="M29 78 C 44 82, 62 82, 77 78" fill="none" stroke="#d4ae52" stroke-width="3"/>
   <ellipse cx="42" cy="92" rx="4" ry="9" fill="#a8723b" opacity=".6"/>
 </svg></span><br>Cebando el catálogo…</div></main>
-<footer><span style="opacity:.5">versión 19</span></footer>
+<footer><span style="opacity:.5">versión 20</span></footer>
 
 <div class="barra" id="barra" onclick="abrirPedido()"><b id="barraTxt">🛍 Mi pedido</b><span>Pedir ›</span></div>
 
@@ -499,8 +499,6 @@
       <div class="card">
         <img class="foto" loading="lazy" src="${img(i.id,500)}" alt="" onclick="ver('${i.c}')">
         ${i.v ? '<span class="play">▶</span>' : ''}
-        <span class="cod">${i.c}</span>
-        ${i.n ? '<span class="nuevo">NUEVO</span>' : ''}
         <button class="fav" onclick="favorito('${i.c}', this)" aria-label="Favorito">${favs.has(i.c) ? '❤️' : '🤍'}</button>
         ${i.p ? `<span class="precio">${fmt(i.p)}</span>` : ''}
         ${i.h ? `<span class="fuego">🔥 Pedida ${i.h} veces hoy</span>` : ''}
