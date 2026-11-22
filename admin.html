@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="robots" content="noindex">
+<title>Vamo' Arriba · Administración</title>
+<link rel="icon" href="logo.png">
+<style>
+  :root{--azul:#1d5aa6;--azul-osc:#123e75;--celeste:#5aa7e0;--celeste-2:#9fcdf0;--celeste-claro:#eef6fc;--sol:#f5b800;--gris:#7b8798;--linea:#d6e5f3;--verde:#2e7d4f;--rojo:#c0392b}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--celeste-claro);color:var(--azul-osc);padding-bottom:110px}
+  header{position:sticky;top:0;z-index:10;background:#fff;box-shadow:0 3px 12px rgba(18,62,117,.12)}
+  .top{display:flex;align-items:center;gap:10px;padding:10px 14px}
+  .top img{width:40px;height:40px}
+  .top b{font-size:18px;color:var(--azul)}
+  .top small{display:block;font-size:12px;color:var(--gris);font-weight:600}
+  .franjas{height:10px;background:repeating-linear-gradient(to bottom,var(--celeste) 0 2.5px,#fff 2.5px 5px)}
+  .tabs{display:flex;gap:8px;padding:10px 14px;background:#fff}
+  .tab{flex:1;border:1.5px solid var(--azul);background:#fff;color:var(--azul);border-radius:999px;padding:9px;font-size:14px;font-weight:800;cursor:pointer}
+  .tab.activo{background:var(--azul);color:#fff}
+  .sec{padding:14px}
+  .card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(29,90,166,.08)}
+  h2{font-size:16px;color:var(--azul);margin-bottom:8px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--azul);background:#fff;color:var(--azul);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer}
+  .chip.activo{background:var(--azul);color:#fff}
+  .chip.chico{padding:5px 10px;font-size:13px}
+  input[type=number],input[type=password],input[type=text]{border:1.5px solid var(--linea);border-radius:10px;padding:10px;font-size:16px;color:var(--azul-osc);width:100%}
+  .fila{display:flex;gap:8px;align-items:center}
+  .btn{display:block;width:100%;border:0;background:var(--azul);color:#fff;font-weight:800;font-size:16px;padding:14px;border-radius:12px;cursor:pointer;text-align:center}
+  .btn.sec2{background:#fff;color:var(--azul);border:1.5px solid var(--azul)}
+  .btn:disabled{opacity:.5}
+  .elegir{display:flex;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--celeste);border-radius:14px;padding:22px;
+          font-weight:800;color:var(--azul);background:var(--celeste-claro);cursor:pointer;font-size:16px}
+  .grilla{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  @media(min-width:600px){.grilla{grid-template-columns:repeat(5,1fr)}}
+  .foto{position:relative;background:#fff;border-radius:10px;overflow:hidden;border:1.5px solid var(--linea)}
+  .foto img{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#dcebf8}
+  .foto input{border:0;border-top:1.5px solid var(--linea);border-radius:0;padding:8px 6px;font-size:15px;text-align:center;font-weight:800}
+  .foto input:placeholder-shown{background:#fff8e1}
+  .foto .x{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:16px;cursor:pointer}
+  .foto .estado{position:absolute;inset:0;bottom:38px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,.55)}
+  .foto.ok{border-color:var(--verde)} .foto.error{border-color:var(--rojo)}
+  .pie{position:fixed;left:0;right:0;bottom:0;background:#fff;padding:12px 14px;box-shadow:0 -3px 12px rgba(18,62,117,.12);z-index:20}
+  .progreso{height:8px;background:var(--celeste-claro);border-radius:99px;overflow:hidden;margin-bottom:8px;display:none}
+  .progreso div{height:100%;width:0;background:var(--celeste);transition:width .3s}
+  .info{font-size:13px;color:var(--gris);margin:6px 0 10px}
+  .aviso{font-size:13px;font-weight:700;color:var(--azul);text-align:center;margin-bottom:8px}
+  /* lista de compras */
+  .dias{display:flex;gap:8px;margin-bottom:12px}
+  .lc{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:600px){.lc{grid-template-columns:repeat(4,1fr)}}
+  .lc .p{background:#fff;border-radius:12px;overflow:hidden;position:relative}
+  .lc .p img{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#dcebf8}
+  .lc .cod{position:absolute;top:8px;left:8px;background:rgba(29,90,166,.9);color:#fff;font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px}
+  .lc .cuenta{position:absolute;top:8px;right:8px;background:var(--sol);color:var(--azul-osc);font-weight:800;font-size:14px;padding:4px 10px;border-radius:999px}
+  .lc .det{padding:8px 10px;font-size:13px;line-height:1.45;border-top:3px solid var(--celeste)}
+  .lc .det small{color:var(--gris)}
+  .lc .tilde{width:100%;border:0;background:var(--azul);color:#fff;font-weight:700;font-size:14px;padding:10px 0;cursor:pointer}
+  .lc .p.ok{opacity:.45} .lc .p.ok .tilde{background:var(--verde)}
+  .vacio{text-align:center;color:var(--gris);padding:40px 10px}
+  .toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:var(--azul);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:700;z-index:60;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center}
+  .toast.ver{opacity:1}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top"><img src="logo.png" alt=""><div><b>Vamo' Arriba</b><small>Administración</small></div></div>
+  <div class="franjas"></div>
+  <div class="tabs" id="tabs" style="display:none">
+    <button class="tab activo" id="tSubir" onclick="tab('subir')">📸 Subir fotos</button>
+    <button class="tab" id="tLista" onclick="tab('lista')">📋 Lista de compras</button>
+  </div>
+</header>
+
+<!-- Ingreso -->
+<div class="sec" id="login">
+  <div class="card">
+    <h2>Ingresá la clave</h2>
+    <p class="info">Es la misma clave que está en el código del script (CLAVE_ADMIN). Queda guardada en este celu.</p>
+    <input type="password" id="clave" placeholder="Clave" autocomplete="current-password">
+    <div style="height:10px"></div>
+    <button class="btn" onclick="entrar()">Entrar</button>
+    <p class="info" id="loginError" style="color:var(--rojo)"></p>
+  </div>
+</div>
+
+<!-- Subir fotos -->
+<div class="sec" id="secSubir" style="display:none">
+  <div class="card">
+    <h2>1. ¿De qué categoría son?</h2>
+    <div class="chips" id="cats"></div>
+  </div>
+  <div class="card">
+    <h2>2. Elegí las fotos</h2>
+    <label class="elegir"><input type="file" id="archivos" accept="image/*" multiple hidden>📷 Elegir fotos del celu</label>
+    <p class="info">Podés elegir muchas de una. Se achican solas antes de subir.</p>
+  </div>
+  <div class="card" id="zonaPrecios" style="display:none">
+    <h2>3. Precios</h2>
+    <div class="fila">
+      <input type="number" inputmode="numeric" id="precioTodas" placeholder="Mismo precio para todas">
+      <button class="chip" onclick="precioATodas()">Aplicar</button>
+    </div>
+    <div class="chips" id="recientes" style="margin-top:8px"></div>
+    <p class="info">O escribí el precio debajo de cada foto. Las que quedan en amarillo no tienen precio.</p>
+    <div class="grilla" id="grilla"></div>
+  </div>
+</div>
+
+<!-- Lista de compras -->
+<div class="sec" id="secLista" style="display:none">
+  <div class="dias" id="dias"></div>
+  <div class="lc" id="lc"></div>
+</div>
+
+<div class="pie" id="pie" style="display:none">
+  <div class="progreso" id="progreso"><div id="barraProg"></div></div>
+  <div class="aviso" id="avisoPie"></div>
+  <button class="btn" id="btnSubir" onclick="subirTodo()">Subir fotos</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  const img = (id, w) => `https://lh3.googleusercontent.com/d/${id}=w${w}`;
+  let CLAVE = localStorage.getItem('va_clave') || '';
+  let CATS = [], cat = '', fotos = [], subiendo = false, diasLista = 3;
+
+  /* ---------- Ingreso ---------- */
+  function entrar(){
+    const c = $('clave').value.trim() || CLAVE;
+    if (!c) return;
+    $('loginError').textContent = 'Verificando…';
+    fetch(API + '?api=login&clave=' + encodeURIComponent(c)).then(r => r.json()).then(d => {
+      if (!d.ok) { $('loginError').textContent = 'Clave incorrecta.'; localStorage.removeItem('va_clave'); return; }
+      CLAVE = c; localStorage.setItem('va_clave', c);
+      CATS = d.categorias; cat = '';
+      $('login').style.display = 'none'; $('tabs').style.display = 'flex';
+      pintarCats(); pintarRecientes(); tab('subir');
+    }).catch(() => { $('loginError').textContent = 'No se pudo conectar. Revisá el link en config.js.'; });
+  }
+  if (CLAVE) entrar();
+
+  function tab(t){
+    $('tSubir').classList.toggle('activo', t === 'subir');
+    $('tLista').classList.toggle('activo', t === 'lista');
+    $('secSubir').style.display = t === 'subir' ? 'block' : 'none';
+    $('secLista').style.display = t === 'lista' ? 'block' : 'none';
+    $('pie').style.display = t === 'subir' && fotos.length ? 'block' : 'none';
+    if (t === 'lista') cargarLista();
+  }
+
+  /* ---------- Subir fotos ---------- */
+  function pintarCats(){
+    $('cats').innerHTML = CATS.map(c => `<button class="chip ${c===cat?'activo':''}" onclick="elegirCat('${c}')">${c}</button>`).join('');
+  }
+  function elegirCat(c){ cat = c; pintarCats(); actualizarPie(); }
+
+  $('archivos').addEventListener('change', e => {
+    [...e.target.files].forEach(f => fotos.push({ file: f, url: URL.createObjectURL(f), precio: '', estado: '' }));
+    e.target.value = '';
+    pintarFotos();
+  });
+
+  function pintarFotos(){
+    $('zonaPrecios').style.display = fotos.length ? 'block' : 'none';
+    $('grilla').innerHTML = fotos.map((f, i) => `
+      <div class="foto ${f.estado}">
+        <img src="${f.url}" alt="">
+        ${f.estado === 'ok' ? '<div class="estado">✅</div>' : f.estado === 'error' ? '<div class="estado">⚠️</div>' : f.estado === 'subiendo' ? '<div class="estado">⏳</div>' : ''}
+        ${f.estado === 'ok' ? '' : `<button class="x" onclick="quitarFoto(${i})" aria-label="Quitar">×</button>`}
+        <input type="number" inputmode="numeric" placeholder="$ precio" value="${f.precio}" oninput="fotos[${i}].precio=this.value;actualizarPie()" ${f.estado==='ok'?'disabled':''}>
+      </div>`).join('');
+    actualizarPie();
+  }
+  function quitarFoto(i){ URL.revokeObjectURL(fotos[i].url); fotos.splice(i, 1); pintarFotos(); }
+  function precioATodas(){
+    const v = $('precioTodas').value; if (!v) return;
+    fotos.forEach(f => { if (f.estado !== 'ok') f.precio = v; });
+    pintarFotos();
+  }
+  function pintarRecientes(){
+    const r = JSON.parse(localStorage.getItem('va_precios') || '[]');
+    $('recientes').innerHTML = r.length ? '<span class="info" style="margin:0;align-self:center">Usados:</span>' +
+      r.map(p => `<button class="chip chico" onclick="$('precioTodas').value=${p}">$${Number(p).toLocaleString('es-AR')}</button>`).join('') : '';
+  }
+  function recordarPrecio(p){
+    if (!p) return;
+    let r = JSON.parse(localStorage.getItem('va_precios') || '[]').filter(x => x != p);
+    r.unshift(p); localStorage.setItem('va_precios', JSON.stringify(r.slice(0, 6)));
+  }
+  function actualizarPie(){
+    const pend = fotos.filter(f => f.estado !== 'ok');
+    const sinPrecio = pend.filter(f => !f.precio).length;
+    $('pie').style.display = fotos.length && $('secSubir').style.display !== 'none' ? 'block' : 'none';
+    $('avisoPie').textContent = !cat ? '☝️ Elegí la categoría arriba'
+      : sinPrecio ? `${sinPrecio} sin precio (se suben igual y lo cargás después)` : '';
+    $('btnSubir').textContent = subiendo ? 'Subiendo…' : pend.length ? `Subir ${pend.length} foto${pend.length>1?'s':''} a ${cat || '…'}` : 'Listo ✅';
+    $('btnSubir').disabled = subiendo || !cat || !pend.length;
+  }
+
+  // Achica la foto a 1280 px y la pasa a JPEG (más liviana y rápida)
+  function achicar(file){
+    return new Promise((ok, mal) => {
+      const im = new Image();
+      im.onload = () => {
+        const max = 1280, k = Math.min(1, max / Math.max(im.width, im.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        ok(c.toDataURL('image/jpeg', 0.82).split(',')[1]);
+      };
+      im.onerror = () => mal(new Error('No se pudo leer la foto'));
+      im.src = URL.createObjectURL(file);
+    });
+  }
+
+  async function subirUna(f){
+    f.estado = 'subiendo'; pintarFotos();
+    try {
+      const data = await achicar(f.file);
+      const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ accion: 'subir', clave: CLAVE, cat, precio: f.precio, data }) });
+      const d = await r.json();
+      if (!d.ok) throw new Error(d.error || 'error');
+      f.estado = 'ok'; recordarPrecio(f.precio);
+    } catch (e) { f.estado = 'error'; }
+  }
+
+  async function subirTodo(){
+    if (!cat || subiendo) return;
+    const cola = fotos.filter(f => f.estado !== 'ok');
+    if (!cola.length) return;
+    subiendo = true; $('progreso').style.display = 'block'; actualizarPie();
+    let hechas = 0;
+    const total = cola.length;
+    const trabajar = async () => {
+      while (cola.length) {
+        const f = cola.shift();
+        await subirUna(f);
+        hechas++; $('barraProg').style.width = Math.round(hechas / total * 100) + '%';
+        $('avisoPie').textContent = `Subiendo ${hechas} de ${total}…`;
+      }
+    };
+    await Promise.all([trabajar(), trabajar()]);   // de a 2 a la vez
+    subiendo = false; pintarRecientes();
+    const errores = fotos.filter(f => f.estado === 'error').length;
+    pintarFotos();
+    $('avisoPie').textContent = errores ? `⚠️ ${errores} no se subieron. Tocá el botón para reintentar.` : '✅ ¡Listo! Ya están en el catálogo.';
+    if (!errores) setTimeout(() => { fotos = []; pintarFotos(); $('progreso').style.display = 'none'; $('barraProg').style.width = '0'; }, 2500);
+  }
+
+  /* ---------- Lista de compras ---------- */
+  function cargarLista(){
+    $('dias').innerHTML = [1,3,7].map(d => `<button class="chip ${d===diasLista?'activo':''}" onclick="diasLista=${d};cargarLista()">${d===1?'Hoy':d+' días'}</button>`).join('');
+    $('lc').innerHTML = '<div class="vacio" style="grid-column:1/-1">Cargando… 🧉</div>';
+    fetch(`${API}?api=lista&dias=${diasLista}&clave=${encodeURIComponent(CLAVE)}`).then(r => r.json()).then(d => {
+      const L = d.lista || [];
+      if (!L.length) { $('lc').innerHTML = '<div class="vacio" style="grid-column:1/-1">Todavía no hay pedidos en este período</div>'; return; }
+      window.LISTA = {}; L.forEach(x => LISTA[x.c] = x);
+      $('lc').innerHTML = L.map(x => {
+        const cnt = {}, users = new Set();
+        x.pedidos.forEach(p => { const k = [p.t && 'Talle ' + p.t, p.col].filter(Boolean).join(' · ') || 'Sin talle'; cnt[k] = (cnt[k]||0) + 1; if (p.u) users.add(p.u); });
+        const lineas = Object.entries(cnt).map(([k, n]) => k + (n > 1 ? ` <b>×${n}</b>` : '')).join('<br>');
+        return `<div class="p ${x.comprada?'ok':''}" id="c_${x.c}">
+          <img loading="lazy" src="${img(x.id,500)}" alt="">
+          <span class="cod">${x.c}</span><span class="cuenta">${x.pedidos.length} 🛍</span>
+          <div class="det">${lineas}${users.size ? `<br><small>${[...users].join(', ')}</small>` : ''}${x.p ? `<br><small>$${Number(x.p).toLocaleString('es-AR')}</small>` : ''}</div>
+          <button class="tilde" onclick="tildar('${x.c}')">${x.comprada ? '✓ Comprada' : 'Marcar comprada'}</button></div>`;
+      }).join('');
+    }).catch(() => { $('lc').innerHTML = '<div class="vacio" style="grid-column:1/-1">No se pudo cargar. Probá de nuevo.</div>'; });
+  }
+  function tildar(c){
+    const x = LISTA[c]; x.comprada = !x.comprada;
+    const el = $('c_' + c); el.classList.toggle('ok', x.comprada);
+    el.querySelector('.tilde').textContent = x.comprada ? '✓ Comprada' : 'Marcar comprada';
+    fetch(`${API}?api=marcar&c=${c}&v=${x.comprada?1:0}&clave=${encodeURIComponent(CLAVE)}`).catch(() => toast('No se pudo guardar, probá de nuevo'));
+  }
+  function toast(t){ const el = $('toast'); el.textContent = t; el.classList.add('ver'); setTimeout(() => el.classList.remove('ver'), 2400); }
+</script>
+</body>
+</html>

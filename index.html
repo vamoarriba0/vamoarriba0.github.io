@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Vamo' Arriba · Directo de Uruguay</title>
+<meta name="description" content="Ropa directo de Uruguay. Sin seña, envíos a todo el país.">
+<meta property="og:title" content="Vamo' Arriba · Directo de Uruguay 🇺🇾">
+<meta property="og:description" content="Mirá el catálogo y armá tu pedido. Sin seña.">
+<meta property="og:image" content="logo.png">
+<link rel="icon" href="logo.png">
+<style>
+  :root{
+    --azul:#1d5aa6; --azul-osc:#123e75; --celeste:#5aa7e0; --celeste-2:#9fcdf0; --celeste-claro:#eef6fc;
+    --sol:#f5b800; --blanco:#fff; --gris:#7b8798; --linea:#d6e5f3; --radio:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--celeste-claro);color:var(--azul-osc);padding-bottom:96px}
+
+  /* ---------- Encabezado (bandera uruguaya) ---------- */
+  header{position:sticky;top:0;z-index:10;background:var(--blanco);box-shadow:0 3px 12px rgba(18,62,117,.12)}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px 8px}
+  .marca{display:flex;align-items:center;gap:10px;min-width:0}
+  .marca img{width:46px;height:46px;object-fit:contain;flex:0 0 auto}
+  .marca b{display:block;font-size:20px;font-weight:900;letter-spacing:-.3px;color:var(--azul)}
+  .marca small{display:block;font-size:12px;font-weight:700;color:var(--celeste)}
+  .ig{font-size:13px;color:#fff;background:var(--azul);text-decoration:none;font-weight:700;border:0;
+      border-radius:999px;padding:8px 13px;white-space:nowrap;cursor:pointer}
+  .franjas{height:14px;background:repeating-linear-gradient(to bottom,var(--celeste) 0 3.5px,#fff 3.5px 7px)}
+  .barra-sup{padding:8px 14px 10px;background:var(--blanco)}
+  .confianza{display:flex;flex-wrap:wrap;gap:6px}
+  .tag{font-size:11.5px;font-weight:800;color:var(--azul);background:var(--celeste-claro);border:1.5px solid var(--celeste-2);
+       border-radius:999px;padding:4px 9px}
+  .tag.guia{background:var(--sol);border-color:var(--sol);color:var(--azul-osc);text-decoration:none}
+  .filtros{display:flex;gap:8px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+  .filtros::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;border:1.5px solid var(--azul);background:#fff;color:var(--azul);
+        border-radius:999px;padding:7px 14px;font-size:14px;font-weight:700;cursor:pointer}
+  .chip.activo{background:var(--azul);color:#fff}
+  .fila2{display:flex;gap:8px;margin-top:10px}
+  .fila2 input,.fila2 select{flex:1;min-width:0;border:1.5px solid var(--linea);background:#fff;
+        border-radius:10px;padding:9px 10px;font-size:14px;color:var(--azul-osc)}
+
+  /* ---------- Avisos ---------- */
+  .aviso-box{margin:12px 12px 0;padding:11px 14px;border-radius:14px;font-size:14px;font-weight:700;
+       display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--celeste-2);color:var(--azul)}
+  .aviso-box small{font-weight:500;color:var(--gris)}
+  .aviso-box .ico{font-size:22px}
+  .aviso-box.urgente{background:var(--sol);border-color:var(--sol);color:var(--azul-osc)}
+  .aviso-box.urgente small{color:var(--azul-osc)}
+  .aviso-box.cerrado{background:var(--azul);border-color:var(--azul);color:#fff}
+  .aviso-box.cerrado small{color:var(--celeste-2)}
+  .aviso-box.viaje{background:linear-gradient(90deg,#fff 0,#fff 70%,var(--celeste-claro) 100%)}
+  .aviso-box a{color:var(--azul);font-weight:800}
+
+  /* ---------- Grilla ---------- */
+  .contador{font-size:12px;color:var(--gris);padding:10px 14px 0;font-weight:700}
+  .grilla{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px 12px}
+  @media(min-width:700px){.grilla{grid-template-columns:repeat(4,1fr)}}
+  .card{background:#fff;border-radius:var(--radio);overflow:hidden;position:relative;box-shadow:0 2px 8px rgba(29,90,166,.10)}
+  .card img.foto{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#dcebf8;cursor:zoom-in}
+  .cod{position:absolute;top:8px;left:8px;background:rgba(29,90,166,.9);color:#fff;font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px}
+  .nuevo{position:absolute;top:36px;left:8px;background:var(--sol);color:var(--azul-osc);font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px}
+  .fav{position:absolute;top:6px;right:6px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.95);
+       font-size:18px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center}
+  .precio{position:absolute;left:8px;bottom:96px;background:#fff;color:var(--azul-osc);font-weight:900;font-size:15px;padding:4px 10px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+  .fuego{position:absolute;left:8px;right:52px;bottom:52px;background:rgba(255,255,255,.95);color:var(--azul-osc);
+         font-size:12px;font-weight:800;padding:5px 8px;border-radius:999px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+  .compartir{position:absolute;right:8px;bottom:52px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.95);
+         color:var(--azul);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center}
+  .play{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;
+        background:rgba(29,90,166,.85);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;pointer-events:none;border:3px solid #fff}
+  .quiero{width:100%;border:0;background:var(--azul);color:#fff;font-weight:800;font-size:15px;padding:11px 0;cursor:pointer;border-top:3px solid var(--celeste)}
+  .quiero.en{background:var(--celeste);color:#fff;border-top-color:var(--azul)}
+  .num{position:absolute;top:8px;left:8px;background:var(--sol);color:var(--azul-osc);width:30px;height:30px;border-radius:50%;
+       display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+  .vacio{text-align:center;color:var(--gris);padding:60px 20px;font-size:15px;grid-column:1/-1}
+  .cargando{text-align:center;padding:70px 20px;color:var(--azul);font-weight:700;grid-column:1/-1}
+  .cargando .mate{font-size:44px;display:inline-block;animation:mate 1.2s ease-in-out infinite}
+  @keyframes mate{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+
+  /* ---------- Barra del pedido ---------- */
+  .barra{position:fixed;left:12px;right:12px;bottom:14px;z-index:40;background:var(--azul);color:#fff;border-radius:16px;padding:12px 14px;
+         display:none;align-items:center;justify-content:space-between;box-shadow:0 6px 20px rgba(18,62,117,.35);border-bottom:4px solid var(--celeste);cursor:pointer}
+  .barra.ver{display:flex}
+  .barra b{font-size:16px}
+  .barra span{background:#fff;color:var(--azul);font-weight:800;border-radius:999px;padding:7px 14px;font-size:14px}
+
+  /* ---------- Ventanas ---------- */
+  .capa{position:fixed;inset:0;background:rgba(18,62,117,.88);z-index:50;display:none;align-items:center;justify-content:center;padding:16px}
+  .capa.abierta{display:flex}
+  .visor img{max-width:100%;max-height:88vh;border-radius:12px}
+  .visor iframe{width:min(100%,420px);height:min(88vh,746px);border:0;border-radius:12px;background:#000;display:none}
+  .cerrar-x{position:absolute;top:12px;right:16px;color:#fff;font-size:32px;background:none;border:0;cursor:pointer}
+  .modal{background:#fff;border-radius:18px;padding:20px;width:100%;max-width:400px;max-height:92vh;overflow-y:auto;border-top:6px solid var(--celeste)}
+  .modal h3{font-size:19px;margin-bottom:4px;color:var(--azul)}
+  .modal p{font-size:14px;color:var(--gris);margin-bottom:12px}
+  .mini{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+  .mini img{width:56px;height:84px;object-fit:cover;border-radius:8px;background:#dcebf8;flex:0 0 auto}
+  .talles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+  .talles .chip{padding:6px 12px;font-size:13px}
+  .modal input{width:100%;border:1.5px solid var(--linea);border-radius:10px;padding:10px;font-size:15px;margin-bottom:10px;color:var(--azul-osc)}
+  .btn{display:block;width:100%;border:0;text-align:center;text-decoration:none;background:var(--azul);color:#fff;font-weight:800;font-size:16px;padding:14px;border-radius:12px;cursor:pointer;margin-top:6px}
+  .nota{font-size:12px;color:var(--gris);text-align:center;margin-top:10px}
+  .cancelar{display:block;margin:10px auto 0;background:none;border:0;color:var(--azul);font-size:14px;text-decoration:underline;cursor:pointer}
+  .link-guia{display:block;text-align:center;font-size:13px;font-weight:700;color:var(--azul);margin-top:10px}
+  .tabla-talles{margin:4px 0 12px;border-radius:12px;overflow:hidden;border:1.5px solid var(--linea)}
+  .tabla-talles .tt-tit{background:var(--azul);color:#fff;font-size:13px;font-weight:700;padding:8px 10px}
+  .tabla-talles table{width:100%;border-collapse:collapse;font-size:13px}
+  .tabla-talles th{background:var(--celeste-claro);color:var(--azul);font-size:11px;font-weight:700;padding:6px 4px}
+  .tabla-talles td{padding:7px 4px;text-align:center;color:var(--azul-osc);border-top:1px solid #e3ecf6;cursor:pointer}
+  .tabla-talles td:first-child{font-weight:800}
+  .tabla-talles tr.sel td{background:var(--sol)}
+  .tabla-talles .tt-nota{font-size:11px;color:var(--gris);padding:6px 10px;background:#fafcff}
+  .lista{max-height:40vh;overflow-y:auto;margin-bottom:12px}
+  .item{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #e3ecf6}
+  .item img{width:44px;height:66px;object-fit:cover;border-radius:6px;background:#dcebf8;flex:0 0 auto}
+  .item div{flex:1;font-size:14px;font-weight:700}
+  .item small{display:block;color:var(--gris);font-weight:500}
+  .item button{background:none;border:0;color:var(--gris);font-size:22px;cursor:pointer;padding:4px 8px}
+  .msj{background:var(--celeste-claro);border:1.5px dashed var(--celeste);border-radius:10px;padding:10px;font-size:13px;white-space:pre-wrap;margin:10px 0;
+       user-select:all;-webkit-user-select:all;word-break:break-all}
+  .pasos{font-size:14px;line-height:1.6;margin:8px 0 6px;padding-left:20px;color:var(--azul-osc)}
+  .aviso-pedido{background:var(--azul);color:#fff;margin:12px 12px 0;padding:14px;border-radius:14px;font-size:14px;border-left:6px solid var(--sol)}
+  .aviso-pedido a{color:var(--celeste-2);font-weight:700}
+  .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--azul);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:700;
+         z-index:60;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center}
+  .toast.ver{opacity:1}
+  footer{text-align:center;font-size:12px;color:var(--gris);padding:20px 10px 0}
+  footer img{width:28px;vertical-align:middle;opacity:.8}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <div class="marca">
+      <img src="logo.png" alt="Vamo' Arriba">
+      <div><b>Vamo' Arriba</b><small>Indumentaria · Directo de Uruguay 🇺🇾</small></div>
+    </div>
+    <button class="ig" onclick="mostrarPasos('')">Escribinos 💬</button>
+  </div>
+  <div class="franjas"></div>
+  <div class="barra-sup">
+    <div class="confianza">
+      <span class="tag">✅ Sin seña</span>
+      <span class="tag">🚚 Envío gratis Zona Sur</span>
+      <span class="tag">📦 Todo el país</span>
+      <a class="tag guia" href="guia.html">📏 Guía de talles</a>
+    </div>
+    <div id="zonaFiltros">
+      <div class="filtros" id="filtros"></div>
+      <div class="fila2">
+        <input id="buscar" type="search" placeholder="Buscar código (ej: M045)" autocomplete="off">
+        <select id="orden">
+          <option value="nuevo">Más nuevo</option>
+          <option value="menor">Menor precio</option>
+          <option value="mayor">Mayor precio</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="viaje"></div>
+<div id="reloj"></div>
+<div id="avisoPedido"></div>
+<div class="contador" id="contador"></div>
+<main class="grilla" id="grilla"><div class="cargando"><span class="mate">🧉</span><br>Cebando el catálogo…</div></main>
+<footer><img src="logo.png" alt=""> Vamo' Arriba · Directo de Uruguay 🇺🇾</footer>
+
+<div class="barra" id="barra" onclick="abrirPedido()"><b id="barraTxt">🛍 Mi pedido</b><span>Enviar ›</span></div>
+
+<!-- Foto grande -->
+<div class="capa visor" id="visor" onclick="if(event.target!==$('visorVideo'))cerrar('visor')">
+  <button class="cerrar-x" aria-label="Cerrar">×</button>
+  <img id="visorImg" alt="">
+  <iframe id="visorVideo" allow="autoplay; fullscreen" allowfullscreen></iframe>
+</div>
+
+<!-- Agregar prenda -->
+<div class="capa" id="capaAgregar" onclick="if(event.target===this)cerrar('capaAgregar')">
+  <div class="modal">
+    <div class="mini">
+      <img id="aImg" alt="">
+      <div><h3>¡Buena elección!</h3><p style="margin:0" id="aSub">Elegí talle y color</p></div>
+    </div>
+    <div id="zonaTalle">
+      <div class="talles" id="talles"></div>
+      <input id="talleLibre" placeholder="Otro talle" autocomplete="off">
+      <div id="tablaTalles"></div>
+    </div>
+    <input id="color" placeholder="Color (opcional)" autocomplete="off">
+    <button class="btn" onclick="agregar()">Agregar a mi pedido 🛍</button>
+    <a class="link-guia" id="linkGuia" href="guia.html">📏 Ver la guía completa (cómo medir y más)</a>
+    <button class="cancelar" onclick="cerrar('capaAgregar')">Seguir mirando</button>
+  </div>
+</div>
+
+<!-- Mi pedido -->
+<div class="capa" id="capaPedido" onclick="if(event.target===this)cerrar('capaPedido')">
+  <div class="modal">
+    <h3>Mi pedido</h3>
+    <p>Copiamos tu pedido para que nos lo mandes por Instagram 💬</p>
+    <div class="lista" id="lista"></div>
+    <input id="usuario" placeholder="Tu usuario de IG (opcional)" autocomplete="off" autocapitalize="off">
+    <button class="btn" onclick="enviar()">Copiar mi pedido 📋</button>
+    <div class="nota">Después lo pegás en nuestro chat de Instagram.</div>
+    <button class="cancelar" onclick="cerrar('capaPedido')">Seguir mirando</button>
+  </div>
+</div>
+
+<!-- Cómo mandarlo -->
+<div class="capa" id="capaPasos" onclick="if(event.target===this)cerrar('capaPasos')">
+  <div class="modal">
+    <h3 id="pasosTit">¡Pedido copiado! ✅</h3>
+    <div id="pasosMsj"></div>
+    <p style="margin:6px 0 0" id="pasosIntro">Ahora mandánoslo así:</p>
+    <ol class="pasos">
+      <li>Cerrá esta ventana con la <b>X</b> de arriba</li>
+      <li>En nuestro perfil tocá <b>Mensaje</b> <small style="color:var(--gris)">(o respondé la historia)</small></li>
+      <li id="pasosPegar">Mantené apretado y tocá <b>Pegar</b></li>
+    </ol>
+    <p style="margin:8px 0 0;font-size:13px">Cebate un mate mientras te respondemos 🧉</p>
+    <button class="btn" onclick="cerrar('capaPasos')">Entendido 👍</button>
+    <a class="link-guia" id="linkPerfil" target="_blank">¿No estás en Instagram? Abrí nuestro perfil</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const PEDIDO = (params.get('pedido') || '').toUpperCase().replace(/[^A-Z0-9,]/g, '');
+  const FOCO = (params.get('p') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const URL_PAGINA = location.origin + location.pathname.replace(/index\.html$/, '');
+  const TALLES = ['XS','S','M','L','XL'];
+
+  let DATA = { items: [], categorias: [], sinTalle: [], ig: 'vamoarriba0' };
+  let porCodigo = {};
+  let categoria = 'Todo';
+  let actual = null, talleElegido = '';
+  let pedido = leerJSON('va_pedido', []);
+  let favs = new Set(leerJSON('va_favs', []));
+
+  const img = (id, w) => `https://lh3.googleusercontent.com/d/${id}=w${w}`;
+  const fmt = n => '$' + Number(n).toLocaleString('es-AR');
+  document.addEventListener('error', e => {   // si una imagen no carga, prueba la alternativa de Drive
+    const el = e.target;
+    if (el.tagName !== 'IMG' || el.dataset.alt || !el.src.includes('lh3.')) return;
+    const m = el.src.match(/\/d\/([^=]+)=w(\d+)/);
+    if (m) { el.dataset.alt = '1'; el.src = `https://drive.google.com/thumbnail?id=${m[1]}&sz=w${m[2]}`; }
+  }, true);
+
+  /* ---------- Carga de datos ---------- */
+  fetch(API + '?api=catalogo')
+    .then(r => r.json())
+    .then(d => {
+      DATA = d; porCodigo = {};
+      DATA.items.forEach(i => porCodigo[i.c] = i);
+      $('linkPerfil').href = 'https://www.instagram.com/' + DATA.ig + '/';
+      pedido = pedido.filter(x => porCodigo[x.c]);
+      if (PEDIDO) { pintarVistaPedido(); return; }
+      pintarFiltros(); pintar(); guardarPedido();
+      pintarViaje(); pintarReloj(); setInterval(pintarReloj, 30000);
+      if (FOCO && porCodigo[FOCO]) setTimeout(() => ver(FOCO), 300);
+    })
+    .catch(() => {
+      $('grilla').innerHTML = '<div class="vacio">No pudimos cargar el catálogo 😕<br>Probá recargar la página.</div>';
+    });
+
+  /* ---------- Filtros y grilla ---------- */
+  function pintarFiltros(){
+    const cats = ['Todo', '❤️ Favoritos', ...DATA.categorias];
+    $('filtros').innerHTML = cats.map(c =>
+      `<button class="chip ${c===categoria?'activo':''}" onclick="elegirCat('${c}')">${c}</button>`).join('');
+  }
+  function elegirCat(c){ categoria = c; pintarFiltros(); pintar(); window.scrollTo({top:0}); }
+
+  function pintar(){
+    const q = $('buscar').value.trim().toUpperCase();
+    const orden = $('orden').value;
+    let lista = DATA.items.filter(i =>
+      (categoria === 'Todo' || i.cat === categoria || (categoria === '❤️ Favoritos' && favs.has(i.c)))
+      && (!q || i.c.includes(q)));
+    if (orden !== 'nuevo') {
+      const s = orden === 'menor' ? 1 : -1;
+      lista = lista.slice().sort((a,b) => a.p==null ? 1 : b.p==null ? -1 : s*(a.p-b.p));
+    }
+    $('contador').textContent = lista.length + (lista.length === 1 ? ' prenda' : ' prendas');
+    if (!lista.length) {
+      $('grilla').innerHTML = categoria === '❤️ Favoritos'
+        ? '<div class="vacio">Todavía no guardaste favoritos.<br>Tocá el 🤍 de las prendas que te gusten.</div>'
+        : '<div class="vacio">No encontramos prendas con ese filtro 🙈</div>';
+      return;
+    }
+    const enPedido = new Set(pedido.map(p => p.c));
+    $('grilla').innerHTML = lista.map(i => `
+      <div class="card">
+        <img class="foto" loading="lazy" src="${img(i.id,500)}" alt="" onclick="ver('${i.c}')">
+        ${i.v ? '<span class="play">▶</span>' : ''}
+        <span class="cod">${i.c}</span>
+        ${i.n ? '<span class="nuevo">NUEVO</span>' : ''}
+        <button class="fav" onclick="favorito('${i.c}', this)" aria-label="Favorito">${favs.has(i.c) ? '❤️' : '🤍'}</button>
+        ${i.p ? `<span class="precio">${fmt(i.p)}</span>` : ''}
+        ${i.h ? `<span class="fuego">🔥 Pedida ${i.h} veces hoy</span>` : ''}
+        <button class="compartir" onclick="compartir('${i.c}')" aria-label="Compartir">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
+        </button>
+        <button class="quiero ${enPedido.has(i.c)?'en':''}" onclick="abrirAgregar('${i.c}')">
+          ${enPedido.has(i.c) ? '✓ En tu pedido' : 'Lo quiero 💙'}</button>
+      </div>`).join('');
+  }
+
+  /* ---------- Favoritos ---------- */
+  function favorito(c, btn){
+    if (favs.has(c)) favs.delete(c); else { favs.add(c); toast('Guardada en favoritos ❤️'); }
+    guardarJSON('va_favs', [...favs]);
+    if (categoria === '❤️ Favoritos') pintar(); else btn.textContent = favs.has(c) ? '❤️' : '🤍';
+  }
+
+  /* ---------- Próximo viaje y cierre ---------- */
+  function pintarViaje(){
+    if (!DATA.viaje) return;
+    const d = new Date(DATA.viaje);
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    const dias = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - hoy) / 86400000);
+    const fecha = d.toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
+    const cuando = dias === 0 ? '¡es hoy!' : dias === 1 ? '¡es mañana!' : `faltan ${dias} días`;
+    $('viaje').innerHTML = `<div class="aviso-box viaje"><span class="ico">🇺🇾</span>
+      <span>Próximo viaje a Uruguay: ${fecha.charAt(0).toUpperCase() + fecha.slice(1)}<br><small>${cuando} · pedí antes y te lo traemos</small></span></div>`;
+  }
+  function pintarReloj(){
+    if (!DATA.cierre) { $('reloj').innerHTML = ''; return; }
+    const falta = DATA.cierre - Date.now();
+    const hora = new Date(DATA.cierre).toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit', hour12:false });
+    let clase = '', txt;
+    if (falta <= 0) { clase = 'cerrado'; txt = '<span class="ico">🙌</span><span>Cerramos los pedidos de hoy<br><small>Seguí mirando, ¡se viene más!</small></span>'; }
+    else {
+      const min = Math.ceil(falta / 60000), h = Math.floor(min / 60), m = min % 60;
+      const quedan = h ? `${h} h ${m} min` : `${m} min`;
+      if (falta <= 15 * 60000) { clase = 'urgente'; txt = `<span class="ico">⏰</span><span>¡Últimos ${quedan}!<br><small>Pedidos hasta las ${hora}</small></span>`; }
+      else txt = `<span class="ico">⏰</span><span>Pedidos hasta las ${hora}<br><small>Quedan ${quedan}</small></span>`;
+    }
+    $('reloj').innerHTML = `<div class="aviso-box ${clase}">${txt}</div>`;
+  }
+
+  /* ---------- Vista de un pedido recibido ---------- */
+  function pintarVistaPedido(){
+    $('zonaFiltros').style.display = 'none';
+    const codigos = PEDIDO.split(',').filter(Boolean);
+    const faltan = codigos.filter(c => !porCodigo[c]).length;
+    $('avisoPedido').innerHTML = `<div class="aviso-pedido">🛍 <b>Pedido de ${codigos.length} prenda${codigos.length>1?'s':''}</b>
+      ${faltan ? `<br>${faltan} ya no está${faltan>1?'n':''} disponible${faltan>1?'s':''}.` : ''}
+      <br><a href="${URL_PAGINA}">Ver todo el catálogo ›</a></div>`;
+    $('grilla').innerHTML = codigos.map((c, n) => porCodigo[c] ? `
+      <div class="card">
+        <img class="foto" src="${img(porCodigo[c].id,500)}" alt="" onclick="ver('${c}')">
+        ${porCodigo[c].v ? '<span class="play">▶</span>' : ''}
+        <span class="num">${n+1}</span>
+        ${porCodigo[c].p ? `<span class="precio" style="bottom:52px">${fmt(porCodigo[c].p)}</span>` : ''}
+        <div class="quiero" style="cursor:default;text-align:center">${c}</div>
+      </div>` : '').join('');
+  }
+
+  /* ---------- Ventanas + botón Atrás ---------- */
+  let capaAbierta = null, ignorarAtras = false;
+  function abrir(id){
+    if (capaAbierta) ocultar(capaAbierta); else history.pushState({ capa: 1 }, '');
+    capaAbierta = id; $(id).classList.add('abierta');
+  }
+  function cerrar(id){
+    if (capaAbierta !== id) { ocultar(id); return; }
+    ocultar(id); capaAbierta = null; ignorarAtras = true; history.back();
+  }
+  function ocultar(id){
+    $(id).classList.remove('abierta');
+    if (id === 'visor') { $('visorImg').src = ''; $('visorVideo').src = ''; }
+  }
+  window.addEventListener('popstate', () => {
+    if (ignorarAtras) { ignorarAtras = false; return; }
+    if (capaAbierta) { ocultar(capaAbierta); capaAbierta = null; }
+  });
+
+  function ver(c){
+    const i = porCodigo[c];
+    if (i.v) {
+      $('visorImg').style.display = 'none'; $('visorVideo').style.display = 'block';
+      $('visorVideo').src = `https://drive.google.com/file/d/${i.id}/preview`;
+    } else {
+      $('visorVideo').style.display = 'none'; $('visorImg').style.display = 'block';
+      $('visorImg').src = img(i.id, 1200);
+    }
+    abrir('visor');
+  }
+
+  /* ---------- Talles ---------- */
+  const TABLAS = {
+    mujer: { titulo: '📏 Talles mujer · medidas del cuerpo en cm', cols: ['Talle','Pecho','Cintura','Cadera'],
+      filas: [['XXS','74-78','58-62','82-86'],['XS','78-82','62-66','86-90'],['S','82-90','66-74','90-97,5'],
+              ['M','90-98','74-82,5','97,5-103,5'],['L','98-107','82,5-93','103,5-110,5'],['XL','107-119','93-105','110,5-120,5']],
+      nota: 'Cada prenda calza distinto: hay modelos entallados y otros oversize.' },
+    nino: { titulo: '📏 Talles niños · guiate por la altura', cols: ['Talle','Talle AR','Mide hasta'],
+      filas: [['1½-2 años','2','92 cm'],['2-4 años','4','104 cm'],['4-6 años','6','116 cm'],['6-8 años','8','128 cm'],
+              ['8-10 años','10','140 cm'],['10-12 años','12','152 cm'],['12-14 años','14','164 cm'],['14+ años','16','170 cm']],
+      nota: 'Si queda entre dos talles, elegí el más grande.' }
+  };
+  const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  const tablaDe = cat => norm(cat).startsWith('muj') ? TABLAS.mujer : norm(cat).startsWith('nin') ? TABLAS.nino : null;
+  const sinTalle = cat => (DATA.sinTalle || []).includes(cat);
+
+  function abrirAgregar(c){
+    actual = porCodigo[c]; talleElegido = '';
+    $('aImg').src = img(actual.id, 300);
+    $('talleLibre').value = ''; $('color').value = '';
+    const st = sinTalle(actual.cat);
+    $('zonaTalle').style.display = st ? 'none' : 'block';
+    $('linkGuia').style.display = st ? 'none' : 'block';
+    $('aSub').textContent = st ? (actual.p ? fmt(actual.p) : 'Free Shop 🛍') : 'Elegí talle y color';
+    $('color').placeholder = st ? 'Variante / color (opcional)' : 'Color (opcional)';
+    pintarTalles();
+    abrir('capaAgregar');
+  }
+  function pintarTalles(){
+    const t = actual && tablaDe(actual.cat);
+    const opciones = t ? t.filas.map(f => f[0]) : TALLES;
+    $('talles').innerHTML = opciones.map(x =>
+      `<button class="chip ${x===talleElegido?'activo':''}" onclick="elegirTalle('${x}')">${x}</button>`).join('');
+    $('tablaTalles').innerHTML = t ? `<div class="tabla-talles"><div class="tt-tit">${t.titulo}</div>
+      <table><tr>${t.cols.map(c => `<th>${c}</th>`).join('')}</tr>
+      ${t.filas.map(f => `<tr class="${f[0]===talleElegido?'sel':''}" onclick="elegirTalle('${f[0]}')">${f.map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}
+      </table><div class="tt-nota">${t.nota} Tocá una fila para elegir.</div></div>` : '';
+  }
+  function elegirTalle(t){ talleElegido = t; $('talleLibre').value = ''; pintarTalles(); }
+  $('talleLibre').addEventListener('input', () => { talleElegido = ''; pintarTalles(); });
+
+  function agregar(){
+    pedido.push({ c: actual.c, talle: $('talleLibre').value.trim() || talleElegido, color: $('color').value.trim() });
+    guardarPedido(); cerrar('capaAgregar'); pintar();
+    toast('Agregada a tu pedido 🛍');
+  }
+
+  /* ---------- Mi pedido ---------- */
+  function abrirPedido(){
+    $('usuario').value = localStorage.getItem('va_usuario') || '';
+    pintarLista(); abrir('capaPedido');
+  }
+  function pintarLista(){
+    $('lista').innerHTML = pedido.map((p, n) => `
+      <div class="item">
+        <img src="${img(porCodigo[p.c].id,200)}" alt="">
+        <div>Prenda ${n+1}${porCodigo[p.c].p ? ' · ' + fmt(porCodigo[p.c].p) : ''}
+          <small>${[p.talle && 'Talle ' + p.talle, p.color].filter(Boolean).join(' · ') || (sinTalle(porCodigo[p.c].cat) ? 'Free Shop' : 'Sin talle elegido')}</small></div>
+        <button onclick="quitar(${n})" aria-label="Quitar">×</button>
+      </div>`).join('');
+  }
+  function quitar(n){
+    pedido.splice(n, 1); guardarPedido(); pintar();
+    if (!pedido.length) cerrar('capaPedido'); else pintarLista();
+  }
+  function enviar(){
+    if (!pedido.length) return;
+    const usuario = $('usuario').value.trim();
+    if (usuario) localStorage.setItem('va_usuario', usuario);
+    const det = p => [p.talle && 'talle ' + p.talle, p.color].filter(Boolean).join(', ');
+    const link = URL_PAGINA + '?pedido=' + pedido.map(p => p.c).join(',');
+    const msg = pedido.length === 1
+      ? `¡Hola! Quiero esta prenda${det(pedido[0]) ? ' (' + det(pedido[0]) + ')' : ''} 🙌\n👉 ${link}`
+      : `¡Hola! Quiero estas prendas 🙌\n` + pedido.map((p, n) => `${n+1}. ${det(p) || (sinTalle(porCodigo[p.c].cat) ? porCodigo[p.c].cat : 'consultar talle')}`).join('\n') + `\n👉 Fotos: ${link}`;
+    copiar(msg);
+    registrar({ i: pedido.map(p => ({ c: p.c, t: p.talle, col: p.color })), u: usuario });
+    pedido = []; guardarPedido(); pintar();
+    mostrarPasos(msg);
+  }
+  function registrar(datos){
+    const url = API + '?reg=' + encodeURIComponent(JSON.stringify(datos));
+    fetch(url, { mode: 'no-cors', keepalive: true }).catch(() => { new Image().src = url; });
+  }
+  function mostrarPasos(msg){
+    $('pasosTit').textContent = msg ? '¡Pedido copiado! ✅' : '¡Escribinos! 💬';
+    $('pasosMsj').innerHTML = msg ? `<div class="msj">${msg.replace(/</g,'&lt;')}</div>` : '';
+    $('pasosIntro').textContent = msg ? 'Ahora mandánoslo así:' : 'Es facilísimo:';
+    $('pasosPegar').innerHTML = msg ? 'Mantené apretado y tocá <b>Pegar</b>' : 'Contanos qué necesitás 😊';
+    abrir('capaPasos');
+  }
+
+  /* ---------- Compartir ---------- */
+  function compartir(c){
+    const url = URL_PAGINA + '?p=' + c, texto = '¡Mirá esto de Vamo\' Arriba! 😍';
+    if (navigator.share) navigator.share({ title: "Vamo' Arriba", text: texto, url })
+      .catch(err => { if (err && err.name !== 'AbortError') { copiar(texto + '\n' + url); toast('Link copiado ✅'); } });
+    else { copiar(texto + '\n' + url); toast('Link copiado ✅ Pegalo donde quieras'); }
+  }
+
+  /* ---------- Utilidades ---------- */
+  function leerJSON(k, def){ try { return JSON.parse(localStorage.getItem(k)) || def; } catch(e) { return def; } }
+  function guardarJSON(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+  function guardarPedido(){
+    guardarJSON('va_pedido', pedido);
+    $('barra').classList.toggle('ver', pedido.length > 0 && !PEDIDO);
+    $('barraTxt').textContent = `🛍 Mi pedido (${pedido.length})`;
+  }
+  function copiar(texto){
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(texto).catch(() => copiarViejo(texto));
+    else copiarViejo(texto);
+  }
+  function copiarViejo(texto){
+    const ta = document.createElement('textarea');
+    ta.value = texto; ta.setAttribute('readonly',''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, 99999);
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+  function toast(t){
+    const el = $('toast'); el.textContent = t; el.classList.add('ver');
+    clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('ver'), 2400);
+  }
+  $('buscar').addEventListener('input', pintar);
+  $('orden').addEventListener('change', pintar);
+</script>
+</body>
+</html>
