@@ -16,21 +16,29 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-       background:var(--celeste-claro);color:var(--azul-osc);padding-bottom:96px}
+       background:#d4e8f8;color:var(--azul-osc);padding-bottom:96px}
 
   /* ---------- Encabezado (bandera uruguaya) ---------- */
-  header{position:sticky;top:0;z-index:10;background:var(--blanco);box-shadow:0 3px 12px rgba(18,62,117,.12)}
+  header{position:sticky;top:0;z-index:10;background:var(--celeste);box-shadow:0 3px 12px rgba(18,62,117,.18)}
   .top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px 8px}
   .marca{display:flex;align-items:center;gap:10px;min-width:0}
-  .marca img{width:46px;height:46px;object-fit:contain;flex:0 0 auto}
-  .marca b{display:block;font-size:20px;font-weight:900;letter-spacing:-.3px;color:var(--azul)}
-  .marca small{display:block;font-size:12px;font-weight:700;color:var(--celeste)}
-  .ig{font-size:13px;color:#fff;background:var(--azul);text-decoration:none;font-weight:700;border:0;
+  .marca img{width:50px;height:50px;object-fit:contain;flex:0 0 auto;background:#fff;border-radius:50%;padding:3px;border:2px solid #fff}
+  .marca b{display:block;font-size:21px;font-weight:900;letter-spacing:-.3px;color:#fff;text-shadow:0 1px 2px rgba(18,62,117,.25)}
+  .marca small{display:block;font-size:12px;font-weight:700;color:#eaf5fe}
+  .ig{font-size:13px;color:var(--azul);background:#fff;text-decoration:none;font-weight:700;border:0;
       border-radius:999px;padding:8px 13px;white-space:nowrap;cursor:pointer}
-  .franjas{height:14px;background:repeating-linear-gradient(to bottom,var(--celeste) 0 3.5px,#fff 3.5px 7px)}
-  .barra-sup{padding:8px 14px 10px;background:var(--blanco)}
+  .franjas{height:14px;background:repeating-linear-gradient(to bottom,#fff 0 3.5px,var(--celeste) 3.5px 7px)}
+  .mate-flot{position:fixed;right:8px;bottom:84px;z-index:35;width:50px;height:50px;border-radius:50%;border:3px solid #fff;
+       background:var(--celeste);font-size:26px;box-shadow:0 4px 14px rgba(18,62,117,.35);cursor:pointer;
+       display:flex;align-items:center;justify-content:center}
+  .mate-flot span{display:inline-block;animation:mate 2.4s ease-in-out infinite}
+  .mate-flot::after{content:'¿Dudas?';position:absolute;right:56px;top:50%;transform:translateY(-50%);transition:opacity .5s;background:#fff;color:var(--azul);
+       font-size:12px;font-weight:800;padding:5px 9px;border-radius:999px;white-space:nowrap;box-shadow:0 2px 8px rgba(18,62,117,.2);animation:none}
+  .mate-flot.quieto::after{opacity:0}
+  .btn.sec{background:#fff;color:var(--azul);border:2px solid var(--azul)}
+  .barra-sup{padding:8px 14px 10px;background:#eaf4fc}
   .confianza{display:flex;flex-wrap:wrap;gap:6px}
-  .tag{font-size:11.5px;font-weight:800;color:var(--azul);background:var(--celeste-claro);border:1.5px solid var(--celeste-2);
+  .tag{font-size:11.5px;font-weight:800;color:var(--azul);background:#fff;border:1.5px solid var(--celeste-2);
        border-radius:999px;padding:4px 9px}
   .tag.guia{background:var(--sol);border-color:var(--sol);color:var(--azul-osc);text-decoration:none}
   .filtros{display:flex;gap:8px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
@@ -145,7 +153,6 @@
   <div class="barra-sup">
     <div class="confianza">
       <span class="tag">✅ Sin seña</span>
-      <span class="tag">🚚 Envío gratis Zona Sur</span>
       <span class="tag">📦 Todo el país</span>
       <a class="tag guia" href="guia.html">📏 Guía de talles</a>
     </div>
@@ -171,6 +178,7 @@
 <footer><img src="logo.png" alt=""> Vamo' Arriba · Directo de Uruguay 🇺🇾</footer>
 
 <div class="barra" id="barra" onclick="abrirPedido()"><b id="barraTxt">🛍 Mi pedido</b><span>Enviar ›</span></div>
+<button class="mate-flot" onclick="mostrarPasos('')" aria-label="Escribinos"><span>🧉</span></button>
 
 <!-- Foto grande -->
 <div class="capa visor" id="visor" onclick="if(event.target!==$('visorVideo'))cerrar('visor')">
@@ -192,7 +200,8 @@
       <div id="tablaTalles"></div>
     </div>
     <input id="color" placeholder="Color (opcional)" autocomplete="off">
-    <button class="btn" onclick="agregar()">Agregar a mi pedido 🛍</button>
+    <button class="btn" id="btnPedirYa" onclick="pedirAhora()">Pedir ahora 📲</button>
+    <button class="btn sec" onclick="agregar()">Agregar y seguir mirando 🛍</button>
     <a class="link-guia" id="linkGuia" href="guia.html">📏 Ver la guía completa (cómo medir y más)</a>
     <button class="cancelar" onclick="cerrar('capaAgregar')">Seguir mirando</button>
   </div>
@@ -204,8 +213,7 @@
     <h3>Mi pedido</h3>
     <p>Copiamos tu pedido para que nos lo mandes por Instagram 💬</p>
     <div class="lista" id="lista"></div>
-    <input id="usuario" placeholder="Tu usuario de IG (opcional)" autocomplete="off" autocapitalize="off">
-    <button class="btn" onclick="enviar()">Copiar mi pedido 📋</button>
+    <button class="btn" onclick="enviar()">Copiar y enviar pedido 📲</button>
     <div class="nota">Después lo pegás en nuestro chat de Instagram.</div>
     <button class="cancelar" onclick="cerrar('capaPedido')">Seguir mirando</button>
   </div>
@@ -419,6 +427,7 @@
     const st = sinTalle(actual.cat);
     $('zonaTalle').style.display = st ? 'none' : 'block';
     $('linkGuia').style.display = st ? 'none' : 'block';
+    $('btnPedirYa').textContent = pedido.length ? `Pedir ahora (${pedido.length + 1} prendas) 📲` : 'Pedir ahora 📲';
     $('aSub').textContent = st ? (actual.p ? fmt(actual.p) : 'Free Shop 🛍') : 'Elegí talle y color';
     $('color').placeholder = st ? 'Variante / color (opcional)' : 'Color (opcional)';
     pintarTalles();
@@ -437,15 +446,20 @@
   function elegirTalle(t){ talleElegido = t; $('talleLibre').value = ''; pintarTalles(); }
   $('talleLibre').addEventListener('input', () => { talleElegido = ''; pintarTalles(); });
 
-  function agregar(){
+  function sumarActual(){
     pedido.push({ c: actual.c, talle: $('talleLibre').value.trim() || talleElegido, color: $('color').value.trim() });
-    guardarPedido(); cerrar('capaAgregar'); pintar();
+    guardarPedido();
+  }
+  function agregar(){
+    sumarActual(); cerrar('capaAgregar'); pintar();
     toast('Agregada a tu pedido 🛍');
+  }
+  function pedirAhora(){                       // un solo paso: suma la prenda y copia el pedido
+    sumarActual(); enviar();
   }
 
   /* ---------- Mi pedido ---------- */
   function abrirPedido(){
-    $('usuario').value = localStorage.getItem('va_usuario') || '';
     pintarLista(); abrir('capaPedido');
   }
   function pintarLista(){
@@ -463,8 +477,7 @@
   }
   function enviar(){
     if (!pedido.length) return;
-    const usuario = $('usuario').value.trim();
-    if (usuario) localStorage.setItem('va_usuario', usuario);
+    const usuario = '';
     const det = p => [p.talle && 'talle ' + p.talle, p.color].filter(Boolean).join(', ');
     const link = URL_PAGINA + '?pedido=' + pedido.map(p => p.c).join(',');
     const msg = pedido.length === 1
@@ -518,6 +531,7 @@
     const el = $('toast'); el.textContent = t; el.classList.add('ver');
     clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('ver'), 2400);
   }
+  setTimeout(() => document.querySelector('.mate-flot').classList.add('quieto'), 5000);  // el cartel "¿Dudas?" se va solo
   $('buscar').addEventListener('input', pintar);
   $('orden').addEventListener('change', pintar);
 </script>
