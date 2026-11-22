@@ -27,14 +27,10 @@
   .marca small{display:block;font-size:12px;font-weight:700;color:#eaf5fe}
   .ig{font-size:13px;color:var(--azul);background:#fff;text-decoration:none;font-weight:700;border:0;
       border-radius:999px;padding:8px 13px;white-space:nowrap;cursor:pointer}
+  .mate-top{display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:0;cursor:pointer;flex:0 0 auto}
+  .mt-ico{width:52px;height:52px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(18,62,117,.25)}
+  .mt-txt{font-size:11px;font-weight:800;color:#fff}
   .franjas{height:14px;background:repeating-linear-gradient(to bottom,#fff 0 3.5px,var(--celeste) 3.5px 7px)}
-  .mate-flot{position:fixed;right:8px;bottom:84px;z-index:35;width:56px;height:56px;border-radius:50%;border:3px solid #fff;
-       background:#fff;font-size:26px;box-shadow:0 4px 14px rgba(18,62,117,.35);cursor:pointer;
-       display:flex;align-items:center;justify-content:center}
-  .mate-flot span{display:inline-flex}
-  .mate-flot::after{content:'¿Dudas?';position:absolute;right:56px;top:50%;transform:translateY(-50%);transition:opacity .5s;background:#fff;color:var(--azul);
-       font-size:12px;font-weight:800;padding:5px 9px;border-radius:999px;white-space:nowrap;box-shadow:0 2px 8px rgba(18,62,117,.2);animation:none}
-  .mate-flot.quieto::after{opacity:0}
   .lbl{display:block;font-size:13px;font-weight:800;color:var(--azul);margin:4px 0 6px}
   .arroba{display:flex;align-items:center;border:2px solid var(--celeste);border-radius:12px;overflow:hidden;margin-bottom:4px}
   .arroba span{padding:0 4px 0 12px;font-weight:900;color:var(--azul);font-size:17px}
@@ -175,9 +171,27 @@
   <div class="top">
     <div class="marca">
       <img src="logo.png" alt="Vamo' Arriba">
-      <div><b>Vamo' Arriba</b><small>Indumentaria · Directo de Uruguay 🇺🇾</small></div>
+      <div><b>Vamo' Arriba</b><small>Indumentaria H&amp;M y Victoria's Secret</small></div>
     </div>
-    <button class="ig" onclick="mostrarPasos('')">Escribinos 💬</button>
+    <button class="mate-top" onclick="mostrarPasos('')" aria-label="Escribinos"><span class="mt-ico"><svg width="38" height="38" xmlns="http://www.w3.org/2000/svg" viewBox="16 -4 124 124" aria-hidden="true">
+  <g transform="translate(94 24) rotate(-118)">
+    <rect x="-13" y="-26" width="26" height="56" rx="9" fill="#1d5aa6"/>
+    <rect x="-13" y="-10" width="26" height="6" fill="#fff"/>
+    <rect x="-13" y="2" width="26" height="6" fill="#fff"/>
+    <rect x="-9" y="-35" width="18" height="11" rx="3" fill="#123e75"/>
+    <rect x="-4" y="-41" width="8" height="8" rx="2" fill="#9aa7b8"/>
+  </g>
+  <path d="M60 46 C 57 52, 57 56, 58 61" fill="none" stroke="#bfe6ff" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 3">
+    <animate attributeName="stroke-dashoffset" from="14" to="0" dur="0.6s" repeatCount="indefinite"/>
+  </path>
+  <path d="M44 68 L30 30" stroke="#d5dde6" stroke-width="4" stroke-linecap="round"/>
+  <rect x="26" y="25" width="8" height="5" rx="2" transform="rotate(-20 30 27)" fill="#eef2f6"/>
+  <path d="M28 68 Q28 62 34 62 L72 62 Q78 62 78 68 C82 94 72 114 53 114 C34 114 24 94 28 68 Z" fill="#8a5a2b"/>
+  <path d="M28 68 Q28 62 34 62 L72 62 Q78 62 78 68 Z" fill="#d4ae52"/>
+  <ellipse cx="53" cy="64" rx="22" ry="5" fill="#5f8a2e"/>
+  <path d="M29 78 C 44 82, 62 82, 77 78" fill="none" stroke="#d4ae52" stroke-width="3"/>
+  <ellipse cx="42" cy="92" rx="4" ry="9" fill="#a8723b" opacity=".6"/>
+</svg></span><span class="mt-txt">Escribinos</span></button>
   </div>
   <div class="franjas"></div>
   <div class="barra-sup">
@@ -189,7 +203,7 @@
     <div id="zonaFiltros">
       <div class="filtros" id="filtros"></div>
       <div class="fila2">
-        <input id="buscar" type="search" placeholder="Buscar código (ej: M045)" autocomplete="off">
+        <input id="buscar" type="search" placeholder="🔎 Buscá: remera, jean, buzo…" autocomplete="off">
         <select id="orden">
           <option value="nuevo">Más nuevo</option>
           <option value="menor">Menor precio</option>
@@ -223,28 +237,10 @@
   <path d="M29 78 C 44 82, 62 82, 77 78" fill="none" stroke="#d4ae52" stroke-width="3"/>
   <ellipse cx="42" cy="92" rx="4" ry="9" fill="#a8723b" opacity=".6"/>
 </svg></span><br>Cebando el catálogo…</div></main>
-<footer><img src="logo.png" alt=""> Vamo' Arriba · Directo de Uruguay 🇺🇾</footer>
+<footer><img src="logo.png" alt=""> Vamo' Arriba · Directo de Uruguay 🇺🇾<br><span style="opacity:.6">versión 13</span></footer>
 
 <div class="barra" id="barra" onclick="abrirPedido()"><b id="barraTxt">🛍 Mi pedido</b><span>Pedir ›</span></div>
-<button class="mate-flot" onclick="mostrarPasos('')" aria-label="Escribinos"><span><svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" viewBox="16 -4 124 124" aria-hidden="true">
-  <g transform="translate(94 24) rotate(-118)">
-    <rect x="-13" y="-26" width="26" height="56" rx="9" fill="#1d5aa6"/>
-    <rect x="-13" y="-10" width="26" height="6" fill="#fff"/>
-    <rect x="-13" y="2" width="26" height="6" fill="#fff"/>
-    <rect x="-9" y="-35" width="18" height="11" rx="3" fill="#123e75"/>
-    <rect x="-4" y="-41" width="8" height="8" rx="2" fill="#9aa7b8"/>
-  </g>
-  <path d="M60 46 C 57 52, 57 56, 58 61" fill="none" stroke="#bfe6ff" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 3">
-    <animate attributeName="stroke-dashoffset" from="14" to="0" dur="0.6s" repeatCount="indefinite"/>
-  </path>
-  <path d="M44 68 L30 30" stroke="#d5dde6" stroke-width="4" stroke-linecap="round"/>
-  <rect x="26" y="25" width="8" height="5" rx="2" transform="rotate(-20 30 27)" fill="#eef2f6"/>
-  <path d="M28 68 Q28 62 34 62 L72 62 Q78 62 78 68 C82 94 72 114 53 114 C34 114 24 94 28 68 Z" fill="#8a5a2b"/>
-  <path d="M28 68 Q28 62 34 62 L72 62 Q78 62 78 68 Z" fill="#d4ae52"/>
-  <ellipse cx="53" cy="64" rx="22" ry="5" fill="#5f8a2e"/>
-  <path d="M29 78 C 44 82, 62 82, 77 78" fill="none" stroke="#d4ae52" stroke-width="3"/>
-  <ellipse cx="42" cy="92" rx="4" ry="9" fill="#a8723b" opacity=".6"/>
-</svg></span></button>
+
 
 <!-- Foto grande -->
 <div class="capa visor" id="visor" onclick="if(event.target!==$('visorVideo'))cerrar('visor')">
@@ -421,21 +417,80 @@
   }
   function elegirCat(c){ categoria = c; pintarFiltros(); pintar(); window.scrollTo({top:0}); }
 
+  /* ---------- Buscador: entiende sinónimos y errores de tipeo ---------- */
+  const SINONIMOS = {
+    'Remera':   ['remera','musculosa','top','crop','chomba','polo','camiseta','remerón','remeron','body','bodie','blusa sin mangas'],
+    'Camisa':   ['camisa','blusa','camisola','camisón'],
+    'Buzo':     ['buzo','sweater','sueter','suéter','hoodie','canguro','cardigan','cárdigan','polar','pulóver','pulover','saco'],
+    'Campera':  ['campera','abrigo','chaqueta','rompeviento','tapado','chaleco','parka','puffer','inflable','camperon'],
+    'Pantalón': ['pantalon','pantalón','jean','jeans','calza','calzas','jogging','joggin','babucha','cargo','leggings','legging','chupín','chupin','palazzo','oxford','mom'],
+    'Short':    ['short','shorts','bermuda','bermudas'],
+    'Pollera':  ['pollera','falda','minifalda','pollerita','skort'],
+    'Vestido':  ['vestido','enterito','mono','jumper','solero'],
+    'Malla':    ['malla','bikini','biquini','traje de baño','trikini','enteriza','bombacha de baño','corpiño de baño'],
+    'Zapatos':  ['zapato','zapatos','zapatilla','zapatillas','sandalia','sandalias','ojota','ojotas','bota','botas','botita','calzado','mocasin','mocasín','chancla','crocs'],
+    'Cartera':  ['cartera','carteras','bolso','mochila','riñonera','rinonera','billetera','bandolera','morral','tote','neceser'],
+    'Lentes':   ['lentes','lente','anteojos','anteojo','gafas','lentes de sol']
+  };
+  const GRUPOS = [['Short','Pollera'], ['Buzo','Campera']];   // buscar uno trae también el otro
+
+  function distancia(a, b){                    // cuántas letras hay que cambiar (errores de tipeo)
+    const m = a.length, n = b.length, d = Array.from({length: m + 1}, (_, i) => [i]);
+    for (let j = 1; j <= n; j++) d[0][j] = j;
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++)
+      d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    return d[m][n];
+  }
+  function tiposDe(palabra){
+    const w = norm(palabra).replace(/s$/, '');
+    if (w.length < 3) return [];
+    const encontrados = new Set();
+    let mejor = null, mejorD = 99;
+    for (const [tipo, lista] of Object.entries(SINONIMOS)) {
+      for (const s of [tipo, ...lista]) {
+        const x = norm(s).replace(/s$/, '');
+        if (x === w || x.startsWith(w) || (w.length >= 4 && w.startsWith(x))) encontrados.add(tipo);
+        const dd = distancia(w, x);
+        if (dd < mejorD) { mejorD = dd; mejor = tipo; }
+      }
+    }
+    if (!encontrados.size && mejor && mejorD <= (w.length >= 6 ? 2 : 1)) encontrados.add(mejor);
+    GRUPOS.forEach(g => { if (g.some(t => encontrados.has(t))) g.forEach(t => encontrados.add(t)); });
+    return [...encontrados];
+  }
+  function coincide(i, q){
+    if (!q) return true;
+    const Q = q.trim().toUpperCase();
+    if (/^[A-Z]{1,2}\d{1,4}$/.test(Q)) return i.c.includes(Q);             // código, ej: M045
+    const palabras = norm(q).split(/[\s,]+/).filter(Boolean);
+    return palabras.every(p => {
+      if (norm(i.cat).startsWith(p) && p.length >= 3) return true;         // mujer, niño, bebé…
+      const tipos = tiposDe(p);
+      return tipos.length ? tipos.includes(i.t) : false;
+    });
+  }
+  function pistaBusqueda(q){
+    if (!q || /^[A-Za-z]{1,2}\d/.test(q.trim())) return '';
+    const t = [...new Set(norm(q).split(/[\s,]+/).flatMap(tiposDe))];
+    return t.length ? 'Mostrando: ' + t.join(', ') : '';
+  }
+
   function pintar(){
-    const q = $('buscar').value.trim().toUpperCase();
+    const q = $('buscar').value;
     const orden = $('orden').value;
     let lista = DATA.items.filter(i =>
       (categoria === 'Todo' || i.cat === categoria || (categoria === '❤️ Favoritos' && favs.has(i.c)))
-      && (!q || i.c.includes(q)));
+      && coincide(i, q));
     if (orden !== 'nuevo') {
       const s = orden === 'menor' ? 1 : -1;
       lista = lista.slice().sort((a,b) => a.p==null ? 1 : b.p==null ? -1 : s*(a.p-b.p));
     }
-    $('contador').textContent = lista.length + (lista.length === 1 ? ' prenda' : ' prendas');
+    const pista = pistaBusqueda(q);
+    $('contador').textContent = lista.length + (lista.length === 1 ? ' prenda' : ' prendas') + (pista ? ' · ' + pista : '');
     if (!lista.length) {
       $('grilla').innerHTML = categoria === '❤️ Favoritos'
         ? '<div class="vacio">Todavía no guardaste favoritos.<br>Tocá el 🤍 de las prendas que te gusten.</div>'
-        : '<div class="vacio">No encontramos prendas con ese filtro 🙈</div>';
+        : `<div class="vacio">No encontramos prendas con ese filtro 🙈${q ? '<br>Probá con otra palabra, o escribinos y te lo buscamos 🧉' : ''}</div>`;
       return;
     }
     const enPedido = new Set(pedido.map(p => p.c));
@@ -547,10 +602,14 @@
     nino: { titulo: '📏 Talles niños · guiate por la altura', cols: ['Talle','Talle AR','Mide hasta'],
       filas: [['1½-2 años','2','92 cm'],['2-4 años','4','104 cm'],['4-6 años','6','116 cm'],['6-8 años','8','128 cm'],
               ['8-10 años','10','140 cm'],['10-12 años','12','152 cm'],['12-14 años','14','164 cm'],['14+ años','16','170 cm']],
-      nota: 'Si queda entre dos talles, elegí el más grande.' }
+      nota: 'Si queda entre dos talles, elegí el más grande.' },
+    bebe: { titulo: '📏 Talles bebé · guiate por la altura', cols: ['Talle','Mide hasta'],
+      filas: [['0-1 mes','50 cm'],['1-2 meses','56 cm'],['2-4 meses','62 cm'],['4-6 meses','68 cm'],
+              ['6-9 meses','74 cm'],['9-12 meses','80 cm'],['12-18 meses','86 cm'],['1½-2 años','92 cm']],
+      nota: 'Los bebés crecen rápido: si duda, elegí el talle siguiente.' }
   };
   const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
-  const tablaDe = cat => norm(cat).startsWith('muj') ? TABLAS.mujer : norm(cat).startsWith('nin') ? TABLAS.nino : null;
+  const tablaDe = cat => norm(cat).startsWith('muj') ? TABLAS.mujer : norm(cat).startsWith('nin') ? TABLAS.nino : norm(cat).startsWith('beb') ? TABLAS.bebe : null;
   const sinTalle = cat => (DATA.sinTalle || []).includes(cat);
 
   function abrirAgregar(c){
@@ -699,7 +758,6 @@
     const el = $('toast'); el.textContent = t; el.classList.add('ver');
     clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('ver'), 2400);
   }
-  setTimeout(() => document.querySelector('.mate-flot').classList.add('quieto'), 5000);  // el cartel "¿Dudas?" se va solo
   $('usuario').addEventListener('input', e => { $('errUsuario').textContent = ''; e.target.value = e.target.value.replace(/^@+/, '').replace(/\s/g, ''); });
   $('buscar').addEventListener('input', pintar);
   $('orden').addEventListener('change', pintar);

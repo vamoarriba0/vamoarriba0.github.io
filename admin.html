@@ -39,8 +39,11 @@
   .foto img{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;background:#dcebf8}
   .foto input{border:0;border-top:1.5px solid var(--linea);border-radius:0;padding:8px 6px;font-size:15px;text-align:center;font-weight:800}
   .foto input:placeholder-shown{background:#fff8e1}
+  .foto select{width:100%;border:0;border-top:1.5px solid var(--linea);padding:7px 4px;font-size:13px;font-weight:700;color:var(--azul-osc);background:#fff;text-align:center}
+  .foto select.falta{background:#fff8e1}
+  .sel{flex:1;border:1.5px solid var(--linea);border-radius:10px;padding:10px;font-size:15px;color:var(--azul-osc);background:#fff}
   .foto .x{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:16px;cursor:pointer}
-  .foto .estado{position:absolute;inset:0;bottom:38px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,.55)}
+  .foto .estado{position:absolute;inset:0;bottom:72px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,.55)}
   .foto.ok{border-color:var(--verde)} .foto.error{border-color:var(--rojo)}
   .pie{position:fixed;left:0;right:0;bottom:0;background:#fff;padding:12px 14px;box-shadow:0 -3px 12px rgba(18,62,117,.12);z-index:20}
   .progreso{height:8px;background:var(--celeste-claro);border-radius:99px;overflow:hidden;margin-bottom:8px;display:none}
@@ -105,7 +108,11 @@
       <button class="chip" onclick="precioATodas()">Aplicar</button>
     </div>
     <div class="chips" id="recientes" style="margin-top:8px"></div>
-    <p class="info">O escribí el precio debajo de cada foto. Las que quedan en amarillo no tienen precio.</p>
+    <div class="fila" style="margin-top:10px">
+      <select id="tipoTodas" class="sel"></select>
+      <button class="chip" onclick="tipoATodas()">Aplicar</button>
+    </div>
+    <p class="info">O completá precio y tipo de prenda debajo de cada foto. Lo amarillo es lo que falta.</p>
     <div class="grilla" id="grilla"></div>
   </div>
 </div>
@@ -129,7 +136,7 @@
   const $ = id => document.getElementById(id);
   const img = (id, w) => `https://lh3.googleusercontent.com/d/${id}=w${w}`;
   let CLAVE = localStorage.getItem('va_clave') || '';
-  let CATS = [], cat = '', fotos = [], subiendo = false, diasLista = 3;
+  let CATS = [], TIPOS = [], cat = '', fotos = [], subiendo = false, diasLista = 3;
 
   /* ---------- Ingreso ---------- */
   function entrar(){
@@ -139,7 +146,8 @@
     fetch(API + '?api=login&clave=' + encodeURIComponent(c)).then(r => r.json()).then(d => {
       if (!d.ok) { $('loginError').textContent = 'Clave incorrecta.'; localStorage.removeItem('va_clave'); return; }
       CLAVE = c; localStorage.setItem('va_clave', c);
-      CATS = d.categorias; cat = '';
+      CATS = d.categorias; TIPOS = d.tipos || []; cat = '';
+      $('tipoTodas').innerHTML = '<option value="">Mismo tipo para todas…</option>' + TIPOS.map(t => `<option>${t}</option>`).join('');
       $('login').style.display = 'none'; $('tabs').style.display = 'flex';
       pintarCats(); pintarRecientes(); tab('subir');
     }).catch(() => { $('loginError').textContent = 'No se pudo conectar. Revisá el link en config.js.'; });
@@ -162,7 +170,7 @@
   function elegirCat(c){ cat = c; pintarCats(); actualizarPie(); }
 
   $('archivos').addEventListener('change', e => {
-    [...e.target.files].forEach(f => fotos.push({ file: f, url: URL.createObjectURL(f), precio: '', estado: '' }));
+    [...e.target.files].forEach(f => fotos.push({ file: f, url: URL.createObjectURL(f), precio: '', tipo: cat === 'Lentes' ? 'Lentes' : '', estado: '' }));
     e.target.value = '';
     pintarFotos();
   });
@@ -175,6 +183,9 @@
         ${f.estado === 'ok' ? '<div class="estado">✅</div>' : f.estado === 'error' ? '<div class="estado">⚠️</div>' : f.estado === 'subiendo' ? '<div class="estado">⏳</div>' : ''}
         ${f.estado === 'ok' ? '' : `<button class="x" onclick="quitarFoto(${i})" aria-label="Quitar">×</button>`}
         <input type="number" inputmode="numeric" placeholder="$ precio" value="${f.precio}" oninput="fotos[${i}].precio=this.value;actualizarPie()" ${f.estado==='ok'?'disabled':''}>
+        <select class="${f.tipo?'':'falta'}" onchange="fotos[${i}].tipo=this.value;this.classList.toggle('falta',!this.value)" ${f.estado==='ok'?'disabled':''}>
+          <option value="">Tipo…</option>${TIPOS.map(t => `<option ${t===f.tipo?'selected':''}>${t}</option>`).join('')}
+        </select>
       </div>`).join('');
     actualizarPie();
   }
@@ -182,6 +193,11 @@
   function precioATodas(){
     const v = $('precioTodas').value; if (!v) return;
     fotos.forEach(f => { if (f.estado !== 'ok') f.precio = v; });
+    pintarFotos();
+  }
+  function tipoATodas(){
+    const v = $('tipoTodas').value; if (!v) return;
+    fotos.forEach(f => { if (f.estado !== 'ok') f.tipo = v; });
     pintarFotos();
   }
   function pintarRecientes(){
@@ -225,7 +241,7 @@
     try {
       const data = await achicar(f.file);
       const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ accion: 'subir', clave: CLAVE, cat, precio: f.precio, data }) });
+        body: JSON.stringify({ accion: 'subir', clave: CLAVE, cat, precio: f.precio, tipo: f.tipo, data }) });
       const d = await r.json();
       if (!d.ok) throw new Error(d.error || 'error');
       f.estado = 'ok'; recordarPrecio(f.precio);
