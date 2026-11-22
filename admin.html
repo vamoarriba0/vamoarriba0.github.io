@@ -234,7 +234,7 @@
       const items = grupos[c].slice().sort((a, b) => (a.hecho - b.hecho) || (a.f - b.f));
       return `<div class="kgrupo"><div class="ktit">${NOMBRE(c)} <span>${grupos[c].filter(x => !x.hecho).length}</span></div>
         ${items.map(x => {
-          const titulo = x.origen === 'manual' ? x.texto : (x.tipo || 'Prenda');
+          const titulo = x.origen === 'manual' ? x.texto : (x.tipo || NOMBRE(x.cat));
           const det = x.origen === 'manual' ? '' : [x.talle && 'Talle ' + x.talle, x.color, x.p ? '$' + Number(x.p).toLocaleString('es-AR') : ''].filter(Boolean).join(' · ');
           return `<div class="kitem ${x.hecho ? 'hecho' : ''}">
             <button class="kcheck" onclick="kTildar('${x.id}')" aria-label="Tildar">${x.hecho ? '✓' : ''}</button>

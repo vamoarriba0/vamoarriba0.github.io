@@ -237,7 +237,7 @@
   <path d="M29 78 C 44 82, 62 82, 77 78" fill="none" stroke="#d4ae52" stroke-width="3"/>
   <ellipse cx="42" cy="92" rx="4" ry="9" fill="#a8723b" opacity=".6"/>
 </svg></span><br>Cebando el catálogo…</div></main>
-<footer><span style="opacity:.5">versión 18</span></footer>
+<footer><span style="opacity:.5">versión 19</span></footer>
 
 <div class="barra" id="barra" onclick="abrirPedido()"><b id="barraTxt">🛍 Mi pedido</b><span>Pedir ›</span></div>
 
@@ -559,7 +559,7 @@
         ${porCodigo[c].v ? '<span class="play">▶</span>' : ''}
         <span class="num">${n+1}</span>
         ${porCodigo[c].p ? `<span class="precio" style="bottom:52px">${fmt(porCodigo[c].p)}</span>` : ''}
-        <div class="quiero" style="cursor:default;text-align:center">${c}</div>
+        <div class="quiero" style="cursor:default;text-align:center">${porCodigo[c].t ? porCodigo[c].t + ' · ' : ''}${c}</div>
       </div>` : '').join('');
   }
 
@@ -661,7 +661,7 @@
     $('lista').innerHTML = pedido.map((p, n) => `
       <div class="item">
         <img src="${img(porCodigo[p.c].id,200)}" alt="">
-        <div>Prenda ${n+1}${porCodigo[p.c].p ? ' · ' + fmt(porCodigo[p.c].p) : ''}
+        <div>${porCodigo[p.c].t || NOMBRE(porCodigo[p.c].cat)}${porCodigo[p.c].p ? ' · ' + fmt(porCodigo[p.c].p) : ''}
           <small>${[p.talle && 'Talle ' + p.talle, p.color].filter(Boolean).join(' · ') || (sinTalle(porCodigo[p.c].cat) ? 'Free Shop' : 'Sin talle elegido')}</small></div>
         <button onclick="quitar(${n})" aria-label="Quitar">×</button>
       </div>`).join('');
@@ -673,9 +673,10 @@
   function mensajePedido(){
     const det = p => [p.talle && 'talle ' + p.talle, p.color].filter(Boolean).join(', ');
     const link = URL_PAGINA + '?pedido=' + pedido.map(p => p.c).join(',');
+    const nom = p => porCodigo[p.c].t || NOMBRE(porCodigo[p.c].cat);
     const msg = pedido.length === 1
-      ? `¡Hola! Quiero esta prenda${det(pedido[0]) ? ' (' + det(pedido[0]) + ')' : ''} 🙌\n👉 ${link}`
-      : `¡Hola! Quiero estas prendas 🙌\n` + pedido.map((p, n) => `${n+1}. ${det(p) || (sinTalle(porCodigo[p.c].cat) ? porCodigo[p.c].cat : 'consultar talle')}`).join('\n') + `\n👉 Fotos: ${link}`;
+      ? `¡Hola! Quiero esta ${nom(pedido[0]).toLowerCase()}${det(pedido[0]) ? ' (' + det(pedido[0]) + ')' : ''} 🙌\n👉 ${link}`
+      : `¡Hola! Quiero estas prendas 🙌\n` + pedido.map((p, n) => `${n+1}. ${nom(p)}${det(p) ? ' · ' + det(p) : ''}`).join('\n') + `\n👉 Fotos: ${link}`;
     return { msg, link };
   }
 
