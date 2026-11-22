@@ -237,7 +237,7 @@
   <path d="M29 78 C 44 82, 62 82, 77 78" fill="none" stroke="#d4ae52" stroke-width="3"/>
   <ellipse cx="42" cy="92" rx="4" ry="9" fill="#a8723b" opacity=".6"/>
 </svg></span><br>Cebando el catálogo…</div></main>
-<footer><img src="logo.png" alt=""> Vamo' Arriba · Directo de Uruguay 🇺🇾<br><span style="opacity:.6">versión 13</span></footer>
+<footer><img src="logo.png" alt=""> Vamo' Arriba · Directo de Uruguay 🇺🇾<br><span style="opacity:.6">versión 14</span></footer>
 
 <div class="barra" id="barra" onclick="abrirPedido()"><b id="barraTxt">🛍 Mi pedido</b><span>Pedir ›</span></div>
 
@@ -433,6 +433,7 @@
     'Lentes':   ['lentes','lente','anteojos','anteojo','gafas','lentes de sol']
   };
   const GRUPOS = [['Short','Pollera'], ['Buzo','Campera']];   // buscar uno trae también el otro
+  const SOLO_EN_SU_CATEGORIA = ['Hombre', 'Free Shop'];        // no aparecen en "Todo", solo tocando su filtro
 
   function distancia(a, b){                    // cuántas letras hay que cambiar (errores de tipeo)
     const m = a.length, n = b.length, d = Array.from({length: m + 1}, (_, i) => [i]);
@@ -458,16 +459,13 @@
     GRUPOS.forEach(g => { if (g.some(t => encontrados.has(t))) g.forEach(t => encontrados.add(t)); });
     return [...encontrados];
   }
+  // Busca por el tipo de prenda cargado en cada foto (no por la categoría)
   function coincide(i, q){
-    if (!q) return true;
+    if (!q || !q.trim()) return true;
     const Q = q.trim().toUpperCase();
     if (/^[A-Z]{1,2}\d{1,4}$/.test(Q)) return i.c.includes(Q);             // código, ej: M045
-    const palabras = norm(q).split(/[\s,]+/).filter(Boolean);
-    return palabras.every(p => {
-      if (norm(i.cat).startsWith(p) && p.length >= 3) return true;         // mujer, niño, bebé…
-      const tipos = tiposDe(p);
-      return tipos.length ? tipos.includes(i.t) : false;
-    });
+    const tipos = new Set(norm(q).split(/[\s,]+/).filter(Boolean).flatMap(tiposDe));
+    return tipos.size > 0 && tipos.has(i.t);
   }
   function pistaBusqueda(q){
     if (!q || /^[A-Za-z]{1,2}\d/.test(q.trim())) return '';
@@ -478,8 +476,10 @@
   function pintar(){
     const q = $('buscar').value;
     const orden = $('orden').value;
+    const buscando = q && q.trim();
     let lista = DATA.items.filter(i =>
-      (categoria === 'Todo' || i.cat === categoria || (categoria === '❤️ Favoritos' && favs.has(i.c)))
+      ((categoria === 'Todo' && (buscando || !SOLO_EN_SU_CATEGORIA.includes(i.cat)))
+        || i.cat === categoria || (categoria === '❤️ Favoritos' && favs.has(i.c)))
       && coincide(i, q));
     if (orden !== 'nuevo') {
       const s = orden === 'menor' ? 1 : -1;
@@ -604,8 +604,7 @@
               ['8-10 años','10','140 cm'],['10-12 años','12','152 cm'],['12-14 años','14','164 cm'],['14+ años','16','170 cm']],
       nota: 'Si queda entre dos talles, elegí el más grande.' },
     bebe: { titulo: '📏 Talles bebé · guiate por la altura', cols: ['Talle','Mide hasta'],
-      filas: [['0-1 mes','50 cm'],['1-2 meses','56 cm'],['2-4 meses','62 cm'],['4-6 meses','68 cm'],
-              ['6-9 meses','74 cm'],['9-12 meses','80 cm'],['12-18 meses','86 cm'],['1½-2 años','92 cm']],
+      filas: [['2-4 M','62 cm'],['4-6 M','68 cm'],['6-9 M','74 cm'],['9-12 M','80 cm'],['12-18 M','86 cm'],['18-24 M','92 cm']],
       nota: 'Los bebés crecen rápido: si duda, elegí el talle siguiente.' }
   };
   const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
