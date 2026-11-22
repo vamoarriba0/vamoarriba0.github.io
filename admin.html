@@ -257,9 +257,10 @@
 
   /* ---------- Lista de compras ---------- */
   function cargarLista(){
-    $('dias').innerHTML = [1,3,7].map(d => `<button class="chip ${d===diasLista?'activo':''}" onclick="diasLista=${d};cargarLista()">${d===1?'Hoy':d+' días'}</button>`).join('');
+    $('dias').innerHTML = [1,3,7].map(d => `<button class="chip ${d===diasLista?'activo':''}" onclick="diasLista=${d};cargarLista()">${d===1?'Hoy':d+' días'}</button>`).join('')
+      + `<button class="chip" style="margin-left:auto" onclick="cargarLista()">🔄 Actualizar</button>`;
     $('lc').innerHTML = '<div class="vacio" style="grid-column:1/-1">Cargando… 🧉</div>';
-    fetch(`${API}?api=lista&dias=${diasLista}&clave=${encodeURIComponent(CLAVE)}`).then(r => r.json()).then(d => {
+    fetch(`${API}?api=lista&dias=${diasLista}&clave=${encodeURIComponent(CLAVE)}&t=${Date.now()}`).then(r => r.json()).then(d => {
       const L = d.lista || [];
       if (!L.length) { $('lc').innerHTML = '<div class="vacio" style="grid-column:1/-1">Todavía no hay pedidos en este período</div>'; return; }
       window.LISTA = {}; L.forEach(x => LISTA[x.c] = x);
