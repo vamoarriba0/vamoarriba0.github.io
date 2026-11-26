@@ -86,7 +86,11 @@
          color:var(--azul);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center}
   .play{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;
         background:rgba(29,90,166,.85);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;pointer-events:none;border:3px solid #fff}
-  .quiero{width:100%;border:0;background:var(--azul);color:#fff;font-weight:800;font-size:15px;padding:11px 0;cursor:pointer;border-top:3px solid var(--celeste)}
+  .quiero{width:100%;border:0;background:#3f97dc;color:#fff;font-weight:800;font-size:13.5px;padding:11px 2px;white-space:nowrap;cursor:pointer;border-top:3px solid #9fcdf0;text-shadow:0 1px 1px rgba(18,62,117,.35)}
+  .tick{position:absolute;top:8px;left:8px;width:28px;height:28px;border-radius:50%;background:var(--azul);color:#fff;
+        font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+  .quiero{display:flex;align-items:center;justify-content:center;gap:5px}
+  .glam{display:inline-block;width:24px;height:24px;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%20%20%3Cpath%20d%3D%22M12%2058%20C8%2036%2012%208%2032%208%20C52%208%2056%2036%2052%2058%20Z%22%20fill%3D%22%23f7e08a%22/%3E%20%20%3Cpath%20d%3D%22M16%2056%20C14%2040%2016%2020%2024%2014%20C20%2026%2020%2044%2022%2056%20Z%22%20fill%3D%22%23fff0b3%22/%3E%20%20%3Cellipse%20cx%3D%2232%22%20cy%3D%2232%22%20rx%3D%2212.5%22%20ry%3D%2215%22%20fill%3D%22%23f6cfae%22/%3E%20%20%3Cpath%20d%3D%22M19.5%2028%20C21%2016%2034%2013%2044.5%2026%20C40%2020%2028%2018%2019.5%2028%20Z%22%20fill%3D%22%23f7e08a%22/%3E%20%20%3Crect%20x%3D%2219%22%20y%3D%2228%22%20width%3D%2211.5%22%20height%3D%228%22%20rx%3D%224%22%20fill%3D%22%231b1b1b%22/%3E%20%20%3Crect%20x%3D%2233.5%22%20y%3D%2228%22%20width%3D%2211.5%22%20height%3D%228%22%20rx%3D%224%22%20fill%3D%22%231b1b1b%22/%3E%20%20%3Cpath%20d%3D%22M30.5%2031%20h3%22%20stroke%3D%22%231b1b1b%22%20stroke-width%3D%221.6%22/%3E%20%20%3Cpath%20d%3D%22M21%2030%20l3%20-1%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.7%22/%3E%20%20%3Cpath%20d%3D%22M35.5%2030%20l3%20-1%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.7%22/%3E%20%20%3Cpath%20d%3D%22M27%2041%20q2.5%20-2%205%20-0.5%20q2.5%20-1.5%205%200.5%20q-2.5%203.5%20-5%203.5%20q-2.5%200%20-5%20-3.5%20Z%22%20fill%3D%22%23e3123d%22/%3E%20%20%3Cg%20transform%3D%22translate%2843%2040%29%22%3E%20%20%20%20%3Cpath%20d%3D%22M3%206%20h14%20l-1.5%2016%20h-11%20Z%22%20fill%3D%22%23ff5fa2%22%20stroke%3D%22%23c2186b%22%20stroke-width%3D%22.8%22/%3E%20%20%20%20%3Cpath%20d%3D%22M6.5%207%20v-2.5%20a3.5%203.5%200%200%201%207%200%20v2.5%22%20fill%3D%22none%22%20stroke%3D%22%23c2186b%22%20stroke-width%3D%221.4%22/%3E%20%20%3C/g%3E%3C/svg%3E") center/contain no-repeat;flex:0 0 auto}
   .quiero.en{background:var(--celeste);color:#fff;border-top-color:var(--azul)}
   .num{position:absolute;top:8px;left:8px;background:var(--sol);color:var(--azul-osc);width:30px;height:30px;border-radius:50%;
        display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
@@ -142,6 +146,11 @@
   .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--azul);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:700;
          z-index:60;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center}
   .toast.ver{opacity:1}
+  .toast:has(.joya){display:flex;align-items:center;gap:10px;font-size:15px;padding:12px 20px 12px 14px;white-space:nowrap;max-width:none}
+  .toast .joya{font-size:26px;display:inline-flex}
+  .joya{display:inline-block;animation:brillo 1.6s ease-in-out infinite}
+  @keyframes brillo{0%,100%{transform:rotate(-8deg) scale(1);filter:drop-shadow(0 0 0 #fff)}
+    50%{transform:rotate(8deg) scale(1.15);filter:drop-shadow(0 0 6px #fff)}}
   footer{text-align:center;font-size:12px;color:var(--gris);padding:20px 10px 0}
   footer img{width:28px;vertical-align:middle;opacity:.8}
 </style>
@@ -237,7 +246,7 @@
   <path d="M29 78 C 44 82, 62 82, 77 78" fill="none" stroke="#d4ae52" stroke-width="3"/>
   <ellipse cx="42" cy="92" rx="4" ry="9" fill="#a8723b" opacity=".6"/>
 </svg></span><br>Cebando el catálogo…</div></main>
-<footer><span style="opacity:.5">versión 20</span></footer>
+<footer><span style="opacity:.5">versión 27</span></footer>
 
 <div class="barra" id="barra" onclick="abrirPedido()"><b id="barraTxt">🛍 Mi pedido</b><span>Pedir ›</span></div>
 
@@ -308,7 +317,7 @@
 </svg>
     <h3 id="listoTit" style="margin-top:6px">¡Vamo' Arriba con ese pedido! 💪</h3>
     <p style="font-size:15px;color:var(--azul-osc)">Recibimos tu pedido. <b>Te escribimos por DM en un ratito</b> para coordinar.</p>
-    <p>Mientras, cebate un mate 🧉</p>
+    <p style="font-style:italic;color:var(--azul)">…y si te ven bien, te contratan <span class="joya" style="vertical-align:middle"><svg width="34" height="34" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">  <path d="M10 40 C6 22 16 6 32 6 C48 6 58 22 54 40 C52 46 46 46 44 42 L20 42 C18 46 12 46 10 40 Z" fill="#f5c842"/>  <path d="M14 24 C18 12 28 10 34 12 C30 16 22 20 14 24 Z" fill="#ffdf6e"/>  <ellipse cx="32" cy="32" rx="13" ry="15" fill="#f8d2b4"/>  <path d="M19 26 C22 16 34 14 45 24 C40 20 30 20 24 24 Z" fill="#f5c842"/>  <path d="M25 31 q2.5 -2 5 0" stroke="#3a2a20" stroke-width="1.6" fill="none" stroke-linecap="round"/>  <path d="M34 31 q2.5 -2 5 0" stroke="#3a2a20" stroke-width="1.6" fill="none" stroke-linecap="round"/>  <path d="M21.5 30.5 l-2 -1 M42.5 30.5 l2 -1 M26 42 q-1.5 -1 -2 -2.5 M38 42 q1.5 -1 2 -2.5" stroke="#c99a7e" stroke-width=".9" fill="none" stroke-linecap="round"/>  <circle cx="24.5" cy="36" r="2.2" fill="#f2a1a1" opacity=".7"/>  <circle cx="39.5" cy="36" r="2.2" fill="#f2a1a1" opacity=".7"/>  <path d="M28 40 q4 3.5 8 0 q-4 1.2 -8 0 Z" fill="#d6283b"/>  <path d="M22 47 q10 9 20 0" fill="none" stroke="#e0a800" stroke-width="2"/>  <g fill="#ffd21a" stroke="#c99400" stroke-width=".6">    <circle cx="22" cy="47.5" r="2"/><circle cx="25.5" cy="50.8" r="2"/><circle cx="29.5" cy="52.8" r="2"/>    <circle cx="34.5" cy="52.8" r="2"/><circle cx="38.5" cy="50.8" r="2"/><circle cx="42" cy="47.5" r="2"/>  </g>  <path d="M30 55 l2 4 l2 -4 z" fill="#ffd21a" stroke="#c99400" stroke-width=".6"/></svg></span></p>
     <button class="btn" onclick="cerrar('capaListo')">Seguir mirando</button>
   </div>
 </div>
@@ -505,8 +514,9 @@
         <button class="compartir" onclick="compartir('${i.c}')" aria-label="Compartir">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
         </button>
-        <button class="quiero ${enPedido.has(i.c)?'en':''}" onclick="abrirAgregar('${i.c}')">
-          ${enPedido.has(i.c) ? '✓ En tu pedido' : '¡Lo quiero!'}</button>
+        ${enPedido.has(i.c) ? '<span class="tick" title="En tu pedido">✓</span>' : ''}
+        <button class="quiero" onclick="abrirAgregar('${i.c}')">
+          Lo veo y lo quiero<span class="glam"></span></button>
       </div>`).join('');
   }
 
@@ -531,14 +541,22 @@
   function pintarReloj(){
     if (!DATA.cierre) { $('reloj').innerHTML = ''; return; }
     const falta = DATA.cierre - Date.now();
-    const hora = new Date(DATA.cierre).toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit', hour12:false });
+    const fin = new Date(DATA.cierre);
+    const hora = fin.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit', hour12:false });
     let clase = '', txt;
     if (falta <= 0) { clase = 'cerrado'; txt = '<span class="ico">🙌</span><span>Cerramos los pedidos de hoy<br><small>Seguí mirando, ¡se viene más!</small></span>'; }
     else {
       const min = Math.ceil(falta / 60000), h = Math.floor(min / 60), m = min % 60;
       const quedan = h ? `${h} h ${m} min` : `${m} min`;
-      if (falta <= 15 * 60000) { clase = 'urgente'; txt = `<span class="ico">⏰</span><span>¡Últimos ${quedan}!<br><small>Pedidos hasta las ${hora}</small></span>`; }
-      else txt = `<span class="ico">⏰</span><span>Pedidos hasta las ${hora}<br><small>Quedan ${quedan}</small></span>`;
+      if (falta <= 15 * 60000) {
+        clase = 'urgente';
+        txt = `<span class="ico">⏰</span><span>¡Últimos ${quedan}!<br><small>Pedidos hasta las ${hora}</small></span>`;
+      } else if (falta <= 24 * 3600000) {        // últimas 24 h: guiño a Moria
+        txt = `<span class="ico">⏰</span><span>Take it easy, take it easy… ¡pero quedan ${quedan}!<br><small>Pedidos hasta las ${hora}</small></span>`;
+      } else {
+        const dia = fin.toLocaleDateString('es-AR', { weekday:'long', day:'numeric' });
+        txt = `<span class="ico">⏰</span><span>Pedidos hasta el ${dia} a las ${hora}<br><small>Quedan ${Math.floor(h / 24)} días y ${h % 24} h</small></span>`;
+      }
     }
     $('reloj').innerHTML = `<div class="aviso-box ${clase}">${txt}</div>`;
   }
@@ -642,7 +660,8 @@
   }
   function agregar(){
     sumarActual(); cerrar('capaAgregar'); pintar();
-    toast('Agregada a tu pedido 🛍');
+    if (actual.cat === 'Hombre') toast('Billetera mata galán', '💸');
+    else toast('Como te ven, te tratan', SENORA);    // guiño a Mirtha
   }
   function pedirAhora(){                       // suma la prenda y va directo a confirmar
     sumarActual(); abrirPedido(); pintar();
@@ -753,8 +772,11 @@
     try { document.execCommand('copy'); } catch(e) {}
     document.body.removeChild(ta);
   }
-  function toast(t){
-    const el = $('toast'); el.textContent = t; el.classList.add('ver');
+  const SENORA = '<svg width="30" height="30" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">  <path d="M10 40 C6 22 16 6 32 6 C48 6 58 22 54 40 C52 46 46 46 44 42 L20 42 C18 46 12 46 10 40 Z" fill="#f5c842"/>  <path d="M14 24 C18 12 28 10 34 12 C30 16 22 20 14 24 Z" fill="#ffdf6e"/>  <ellipse cx="32" cy="32" rx="13" ry="15" fill="#f8d2b4"/>  <path d="M19 26 C22 16 34 14 45 24 C40 20 30 20 24 24 Z" fill="#f5c842"/>  <path d="M25 31 q2.5 -2 5 0" stroke="#3a2a20" stroke-width="1.6" fill="none" stroke-linecap="round"/>  <path d="M34 31 q2.5 -2 5 0" stroke="#3a2a20" stroke-width="1.6" fill="none" stroke-linecap="round"/>  <path d="M21.5 30.5 l-2 -1 M42.5 30.5 l2 -1 M26 42 q-1.5 -1 -2 -2.5 M38 42 q1.5 -1 2 -2.5" stroke="#c99a7e" stroke-width=".9" fill="none" stroke-linecap="round"/>  <circle cx="24.5" cy="36" r="2.2" fill="#f2a1a1" opacity=".7"/>  <circle cx="39.5" cy="36" r="2.2" fill="#f2a1a1" opacity=".7"/>  <path d="M28 40 q4 3.5 8 0 q-4 1.2 -8 0 Z" fill="#d6283b"/>  <path d="M22 47 q10 9 20 0" fill="none" stroke="#e0a800" stroke-width="2"/>  <g fill="#ffd21a" stroke="#c99400" stroke-width=".6">    <circle cx="22" cy="47.5" r="2"/><circle cx="25.5" cy="50.8" r="2"/><circle cx="29.5" cy="52.8" r="2"/>    <circle cx="34.5" cy="52.8" r="2"/><circle cx="38.5" cy="50.8" r="2"/><circle cx="42" cy="47.5" r="2"/>  </g>  <path d="M30 55 l2 4 l2 -4 z" fill="#ffd21a" stroke="#c99400" stroke-width=".6"/></svg>';
+  function toast(t, icono){
+    const el = $('toast');
+    el.innerHTML = icono ? `<span class="joya">${icono}</span><span>${t}</span>` : t;
+    el.classList.add('ver');
     clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('ver'), 2400);
   }
   $('usuario').addEventListener('input', e => { $('errUsuario').textContent = ''; e.target.value = e.target.value.replace(/^@+/, '').replace(/\s/g, ''); });
