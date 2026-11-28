@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Vamo' Arriba · Directo de Uruguay</title>
+<meta name="version" content="32">
 <meta name="description" content="Ropa directo de Uruguay. Sin seña, envíos a todo el país.">
 <meta property="og:title" content="Vamo' Arriba · Directo de Uruguay 🇺🇾">
 <meta property="og:description" content="Mirá el catálogo y armá tu pedido. Sin seña.">
@@ -52,12 +53,15 @@
   .mirtha-tit .joya{display:inline-flex;font-style:normal;font-size:22px}
   .sacudir{animation:sacudir .4s}
   @keyframes sacudir{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-  .combina{margin-top:14px;border-top:1px solid #e3ecf6;padding-top:10px}
-  .combina b{font-size:14px;color:var(--azul)}
+  .combina{margin-top:14px;background:var(--celeste-claro);border:2px solid var(--celeste-2);border-radius:14px;padding:12px}
+  .combina b{font-size:15px;color:var(--azul)}
   .combina-fila{display:flex;gap:8px;overflow-x:auto;margin-top:8px;padding-bottom:4px}
-  .combina-fila button{flex:0 0 auto;width:84px;border:1.5px solid var(--linea);border-radius:10px;background:#fff;padding:0;overflow:hidden;cursor:pointer;text-align:center}
-  .combina-fila img{width:100%;height:112px;object-fit:cover;display:block;background:#dcebf8}
+  .combina-fila button{flex:0 0 auto;width:100px;border:1.5px solid var(--linea);border-radius:10px;background:#fff;padding:0;overflow:hidden;cursor:pointer;text-align:center}
+  .combina-fila img{width:100%;height:134px;object-fit:cover;display:block;background:#dcebf8}
   .combina-fila span{display:block;font-size:11.5px;font-weight:700;color:var(--azul-osc);padding:4px 2px}
+  .volver{display:block;background:none;border:0;color:var(--azul);font-size:14px;font-weight:800;cursor:pointer;padding:0 0 10px;margin-top:-4px}
+  .ver-combina{display:inline-block;margin-top:6px;border:0;background:var(--sol);color:var(--azul-osc);font-size:12px;font-weight:800;
+    padding:5px 10px;border-radius:999px;cursor:pointer}
   .btn.sec{background:#fff;color:var(--azul);border:2px solid var(--azul)}
   .barra-sup{padding:8px 14px 10px;background:#eaf4fc}
   .confianza{display:flex;flex-wrap:wrap;gap:6px}
@@ -198,7 +202,7 @@
       <img src="logo.png" alt="Vamo' Arriba">
       <div><b>Vamo' Arriba</b><small>Indumentaria H&amp;M y Victoria's Secret</small></div>
     </div>
-    <button class="mate-top" onclick="mostrarPasos('')" aria-label="Escribinos"><span class="mt-ico"><svg width="38" height="38" xmlns="http://www.w3.org/2000/svg" viewBox="16 -4 124 124" aria-hidden="true">
+    <button class="mate-top" onclick="toast('¿Dudas? Escribinos por DM', '🧉')" aria-label="Escribinos"><span class="mt-ico"><svg width="38" height="38" xmlns="http://www.w3.org/2000/svg" viewBox="16 -4 124 124" aria-hidden="true">
   <g transform="translate(94 24) rotate(-118)">
     <rect x="-13" y="-26" width="26" height="56" rx="9" fill="#1d5aa6"/>
     <rect x="-13" y="-10" width="26" height="6" fill="#fff"/>
@@ -262,7 +266,6 @@
   <path d="M29 78 C 44 82, 62 82, 77 78" fill="none" stroke="#d4ae52" stroke-width="3"/>
   <ellipse cx="42" cy="92" rx="4" ry="9" fill="#a8723b" opacity=".6"/>
 </svg></span><br>Cebando el catálogo…</div></main>
-<footer><span style="opacity:.5">versión 29</span></footer>
 
 <div class="barra" id="barra" onclick="abrirPedido()"><b id="barraTxt">🛍 Mi pedido</b><span>Pedir ›</span></div>
 
@@ -277,9 +280,11 @@
 <!-- Agregar prenda -->
 <div class="capa" id="capaAgregar" onclick="if(event.target===this)cerrar('capaAgregar')">
   <div class="modal">
+    <button class="volver" onclick="cerrar('capaAgregar')">← Volver</button>
     <div class="mini">
       <img id="aImg" alt="">
-      <div><h3 id="aTit" class="mirtha-tit"></h3><p style="margin:0" id="aSub">Elegí talle y color</p></div>
+      <div><h3 id="aTit" class="mirtha-tit"></h3><p style="margin:0" id="aSub">Elegí talle y color</p>
+        <button class="ver-combina" id="verCombina" onclick="$('combina').scrollIntoView({behavior:'smooth',block:'center'})">✨ Ver con qué combina ↓</button></div>
     </div>
     <div id="zonaTalle">
       <div class="err" id="errTalle"></div>
@@ -290,9 +295,9 @@
     <input id="color" placeholder="Color (opcional)" autocomplete="off">
     <button class="btn" id="btnPedirYa" onclick="pedirAhora()">Pedir ahora 📲</button>
     <button class="btn sec" onclick="agregar()">Agregar y seguir mirando 🛍</button>
-    <a class="link-guia" id="linkGuia" href="guia.html">📏 Ver la guía completa (cómo medir y más)</a>
     <div id="combina"></div>
-    <button class="cancelar" onclick="cerrar('capaAgregar')">Seguir mirando</button>
+    <a class="link-guia" id="linkGuia" href="guia.html">📏 Ver la guía completa (cómo medir y más)</a>
+    <button class="cancelar" onclick="cerrar('capaAgregar')">Volver</button>
   </div>
 </div>
 
@@ -307,7 +312,7 @@
     <div class="err" id="errUsuario"></div>
     <p class="info-u">Te escribimos por DM a esa cuenta para coordinar. Revisá que esté bien escrito 😉</p>
     <button class="btn" id="btnConfirmar" onclick="confirmar()">Confirmar pedido ✅</button>
-    <button class="cancelar" onclick="cerrar('capaPedido')">Seguir mirando</button>
+    <button class="cancelar" onclick="cerrar('capaPedido')">Volver</button>
     <a class="link-guia" href="#" onclick="event.preventDefault();enviarCopiando()">Prefiero escribirles yo</a>
   </div>
 </div>
@@ -409,6 +414,20 @@
       });
   }
   cargar();
+
+  /* ---------- Contador de visitas (no cuenta los celus de Vamo Arriba) ---------- */
+  (function(){
+    try {
+      if (params.get('yo') === '1') { localStorage.setItem('va_admin', '1'); setTimeout(() => toast('Este celu quedó marcado: no suma visitas', '✅'), 900); }
+      if (params.get('yo') === '0') localStorage.removeItem('va_admin');
+      if (localStorage.getItem('va_admin') || PEDIDO || sessionStorage.getItem('va_visto')) return;
+      let id = localStorage.getItem('va_vid');
+      if (!id) { id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); localStorage.setItem('va_vid', id); }
+      sessionStorage.setItem('va_visto', '1');
+      const o = /Instagram/i.test(navigator.userAgent) ? 'ig' : 'otro';
+      fetch(`${API}?api=visita&id=${id}&o=${o}`, { mode: 'no-cors', keepalive: true }).catch(() => {});
+    } catch (e) {}
+  })();
 
   /* ---------- Deslizar hacia abajo para actualizar ---------- */
   (function(){
@@ -515,7 +534,7 @@
       lista = lista.slice().sort((a,b) => a.p==null ? 1 : b.p==null ? -1 : s*(a.p-b.p));
     }
     const pista = pistaBusqueda(q);
-    $('contador').textContent = lista.length + (lista.length === 1 ? ' prenda' : ' prendas') + (pista ? ' · ' + pista : '');
+    $('contador').textContent = pista;          // solo muestra qué está buscando
     if (!lista.length) {
       $('grilla').innerHTML = categoria === '❤️ Favoritos'
         ? '<div class="vacio">Todavía no guardaste favoritos.<br>Tocá el 🤍 de las prendas que te gusten.</div>'
@@ -645,7 +664,7 @@
   };
   const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
   const tablaDe = cat => norm(cat).startsWith('muj') ? TABLAS.mujer : norm(cat).startsWith('nin') ? TABLAS.nino : norm(cat).startsWith('beb') ? TABLAS.bebe : null;
-  const sinTalle = cat => (DATA.sinTalle || []).includes(cat);
+  const sinTalle = cat => (DATA.sinTalle || []).includes(cat) || /^(free|lente)/.test(norm(cat));
 
   function abrirAgregar(c){
     actual = porCodigo[c]; talleElegido = '';
@@ -688,7 +707,8 @@
     const objetivo = CON[actual.t] || [];
     let lista = DATA.items.filter(i => i.c !== actual.c && i.cat === actual.cat && objetivo.includes(i.t));
     lista = lista.sort(() => Math.random() - 0.5).slice(0, 6);
-    $('combina').innerHTML = lista.length ? `<div class="combina"><b>✨ Combinalo con…</b>
+    $('verCombina').style.display = lista.length ? 'inline-block' : 'none';
+    $('combina').innerHTML = lista.length ? `<div class="combina"><b>✨ Armá el look: combinalo con…</b>
       <div class="combina-fila">${lista.map(i => `<button onclick="cambiarA('${i.c}')"><img src="${img(i.id,200)}" alt=""><span>${i.t}${i.p ? '<br>' + fmt(i.p) : ''}</span></button>`).join('')}</div></div>` : '';
   }
   function cambiarA(c){                        // abre la prenda sugerida en la misma ventana

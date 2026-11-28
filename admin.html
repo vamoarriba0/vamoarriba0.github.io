@@ -17,7 +17,7 @@
   .top small{display:block;font-size:12px;color:var(--gris);font-weight:600}
   .franjas{height:10px;background:repeating-linear-gradient(to bottom,var(--celeste) 0 2.5px,#fff 2.5px 5px)}
   .tabs{display:flex;gap:8px;padding:10px 14px;background:#fff}
-  .tab{flex:1;border:1.5px solid var(--azul);background:#fff;color:var(--azul);border-radius:999px;padding:9px;font-size:14px;font-weight:800;cursor:pointer}
+  .tab{flex:1;border:1.5px solid var(--azul);background:#fff;color:var(--azul);border-radius:999px;padding:8px 2px;font-size:12.5px;white-space:nowrap;font-weight:800;cursor:pointer}
   .tab.activo{background:var(--azul);color:#fff}
   .sec{padding:14px}
   .card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(29,90,166,.08)}
@@ -41,9 +41,11 @@
   .foto input:placeholder-shown{background:#fff8e1}
   .foto select{width:100%;border:0;border-top:1.5px solid var(--linea);padding:7px 4px;font-size:13px;font-weight:700;color:var(--azul-osc);background:#fff;text-align:center}
   .foto select.falta{background:#fff8e1}
+  .foto .ia{width:100%;border:0;border-top:1.5px solid var(--linea);background:#fff;color:var(--azul);font-size:12px;font-weight:800;padding:7px 2px;cursor:pointer}
+  .foto .ia.on{background:var(--sol);color:var(--azul-osc)}
   .sel{flex:1;border:1.5px solid var(--linea);border-radius:10px;padding:10px;font-size:15px;color:var(--azul-osc);background:#fff}
   .foto .x{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:16px;cursor:pointer}
-  .foto .estado{position:absolute;inset:0;bottom:72px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,.55)}
+  .foto .estado{position:absolute;inset:0;bottom:104px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,.55)}
   .foto.ok{border-color:var(--verde)} .foto.error{border-color:var(--rojo)}
   .pie{position:fixed;left:0;right:0;bottom:0;background:#fff;padding:12px 14px;box-shadow:0 -3px 12px rgba(18,62,117,.12);z-index:20}
   .progreso{height:8px;background:var(--celeste-claro);border-radius:99px;overflow:hidden;margin-bottom:8px;display:none}
@@ -63,6 +65,20 @@
   .lc .tilde{width:100%;border:0;background:var(--azul);color:#fff;font-weight:700;font-size:14px;padding:10px 0;cursor:pointer}
   .lc .p.ok{opacity:.45} .lc .p.ok .tilde{background:var(--verde)}
   .vacio{text-align:center;color:var(--gris);padding:40px 10px}
+  .vtab{width:100%;border-collapse:collapse;font-size:13px}
+  .vtab th{font-size:11px;color:var(--gris);text-align:center;padding:4px 2px;font-weight:700}
+  .vtab th:first-child,.vtab td:first-child{text-align:left}
+  .vtab td{padding:8px 2px;border-top:1px solid #e3ecf6;text-align:center;font-weight:700;color:var(--azul)}
+  .vtab small{display:block;font-size:10.5px;color:var(--celeste);font-weight:800}
+  .vis-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .vis{background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 2px 8px rgba(29,90,166,.08)}
+  .vis small{display:block;font-size:12px;color:var(--gris);font-weight:700}
+  .vis b{font-size:28px;color:var(--azul)}
+  .vrow{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px}
+  .vd{width:78px;flex:0 0 auto;color:var(--azul-osc);font-weight:600}
+  .vbar{flex:1;height:10px;background:var(--celeste-claro);border-radius:99px;overflow:hidden}
+  .vbar i{display:block;height:100%;background:var(--celeste);border-radius:99px}
+  .vn{width:92px;flex:0 0 auto;text-align:right;font-weight:700;color:var(--azul)}
   /* lista tipo Keep */
   .card.nuevo{padding:12px}
   .kgrupo{background:#fff;border-radius:14px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(29,90,166,.08)}
@@ -92,6 +108,7 @@
     <button class="tab activo" id="tSubir" onclick="tab('subir')">📸 Subir</button>
     <button class="tab" id="tKeep" onclick="tab('keep')">📝 Lista</button>
     <button class="tab" id="tHora" onclick="tab('hora')">⏰ Horarios</button>
+    <button class="tab" id="tVis" onclick="tab('vis')">📊 Visitas</button>
   </div>
 </header>
 
@@ -130,6 +147,12 @@
       <button class="chip" onclick="tipoATodas()">Aplicar</button>
     </div>
     <p class="info">O completá precio y tipo de prenda debajo de cada foto. Lo amarillo es lo que falta.</p>
+    <div class="fila" style="margin:-2px 0 10px">
+      <span class="info" style="margin:0;flex:1">✨ <b>Fondo prolijo</b> (solo en las que elijas): fondo</span>
+      <select id="fondoIA" class="sel" style="flex:0 0 auto;width:auto">
+        <option value="#eef6fc">Celeste</option><option value="#ffffff">Blanco</option>
+      </select>
+    </div>
     <div class="grilla" id="grilla"></div>
   </div>
 </div>
@@ -150,6 +173,25 @@
   </div>
   <div id="keep"></div>
   <button class="btn sec2" id="kLimpiar" style="margin-top:6px;display:none" onclick="kLimpiar()">🗑 Borrar lo tildado</button>
+</div>
+
+<!-- Visitas -->
+<div class="sec" id="secVis" style="display:none">
+  <div class="vis-grid" id="visHoy"></div>
+  <div class="card">
+    <h2>🧳 Por viaje</h2>
+    <div id="visViajes"></div>
+  </div>
+  <div class="card">
+    <h2>Últimos 14 días</h2>
+    <div id="visDias"></div>
+  </div>
+  <div class="card">
+    <h2>📱 Sus celus no cuentan</h2>
+    <p class="info">Este navegador ya no suma visitas. Ojo: Instagram tiene su propio navegador, así que para que tampoco cuenten cuando entran desde IG, mandense este link por DM y ábranlo una vez desde ahí, en cada celu:</p>
+    <p style="font-weight:800;color:var(--azul);word-break:break-all">vamoarriba0.github.io/?yo=1</p>
+  </div>
+  <button class="chip" onclick="cargarVisitas()" style="width:100%">🔄 Actualizar</button>
 </div>
 
 <!-- Horarios -->
@@ -194,6 +236,7 @@
     fetch(API + '?api=login&clave=' + encodeURIComponent(c)).then(r => r.json()).then(d => {
       if (!d.ok) { $('loginError').textContent = 'Clave incorrecta.'; localStorage.removeItem('va_clave'); return; }
       CLAVE = c; localStorage.setItem('va_clave', c);
+      localStorage.setItem('va_admin', '1');       // este navegador no suma visitas
       CATS = d.categorias; TIPOS = d.tipos || []; cat = '';
       $('tipoTodas').innerHTML = '<option value="">Mismo tipo para todas…</option>' + TIPOS.map(t => `<option>${t}</option>`).join('');
       $('login').style.display = 'none'; $('tabs').style.display = 'flex';
@@ -204,12 +247,13 @@
 
   const NOMBRE = c => c === 'Niño' ? 'Infantil' : c;      // cómo se muestra cada categoría
   function tab(t){
-    [['subir','tSubir','secSubir'],['keep','tKeep','secKeep'],['hora','tHora','secHora']].forEach(([k, b, s]) => {
+    [['subir','tSubir','secSubir'],['keep','tKeep','secKeep'],['hora','tHora','secHora'],['vis','tVis','secVis']].forEach(([k, b, s]) => {
       $(b).classList.toggle('activo', t === k); $(s).style.display = t === k ? 'block' : 'none';
     });
     $('pie').style.display = t === 'subir' && fotos.length ? 'block' : 'none';
     if (t === 'keep') cargarKeep();
     if (t === 'hora') cargarHorarios();
+    if (t === 'vis') cargarVisitas();
   }
 
   /* ---------- Lista tipo Keep ---------- */
@@ -276,6 +320,36 @@
     kPost({ que: 'limpiar' }).then(() => cargarKeep()).catch(() => cargarKeep());
   }
 
+  /* ---------- Visitas ---------- */
+  function cargarVisitas(){
+    $('visHoy').innerHTML = '<div class="vacio" style="grid-column:1/-1">Cargando… 🧉</div>';
+    fetch(`${API}?api=visitas&clave=${encodeURIComponent(CLAVE)}&t=${Date.now()}`).then(r => r.json()).then(d => {
+      if (d.error) throw 0;
+      const hoy = d.dias[d.dias.length - 1];
+      const sem = d.dias.slice(-7).reduce((s, x) => s + x.personas, 0);
+      const pctIg = hoy.visitas ? Math.round(hoy.ig / hoy.visitas * 100) : 0;
+      $('visHoy').innerHTML = [
+        ['Personas hoy', hoy.personas], ['Pedidos hoy', hoy.pedidos],
+        ['Últimos 7 días', sem], ['Desde el inicio', d.total]
+      ].map(([t, n]) => `<div class="vis"><small>${t}</small><b>${n}</b></div>`).join('')
+        + `<p class="info" style="grid-column:1/-1;margin:0">Hoy: ${hoy.visitas} visitas · ${pctIg}% desde Instagram</p>`;
+      const V = d.viajes || [];
+      const hoyIso = new Date().toISOString().slice(0, 10);
+      $('visViajes').innerHTML = V.length ? `<table class="vtab"><tr><th>Viaje</th><th>👤 Entraron</th><th>🛍 Pidieron</th><th>👕 Prendas</th></tr>
+        ${V.map(x => `<tr><td><b>${new Date(x.viaje + 'T12:00:00').toLocaleDateString('es-AR', { day:'numeric', month:'short', year:'2-digit' })}</b>
+          ${x.viaje >= hoyIso ? '<small>en curso</small>' : ''}</td><td>${x.personas}</td><td>${x.clientas}</td><td>${x.prendas}</td></tr>`).join('')}</table>
+        <p class="info" style="margin:8px 0 0">Cada viaje junta lo que pasó desde el viaje anterior hasta ese día. Las fechas salen de ⏰ Horarios.</p>`
+        : '<p class="info" style="margin:0">Cargá la fecha del próximo viaje en ⏰ Horarios y acá vas a ver los números de cada viaje.</p>';
+      const max = Math.max(1, ...d.dias.map(x => x.personas));
+      $('visDias').innerHTML = d.dias.slice().reverse().map(x => {
+        const f = new Date(x.dia + 'T12:00:00').toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'numeric' });
+        return `<div class="vrow"><span class="vd">${f}</span>
+          <span class="vbar"><i style="width:${Math.round(x.personas / max * 100)}%"></i></span>
+          <span class="vn">${x.personas} <small>👤</small> · ${x.pedidos} <small>🛍</small></span></div>`;
+      }).join('') + '<p class="info" style="margin:8px 0 0">👤 personas que entraron · 🛍 personas que pidieron</p>';
+    }).catch(() => { $('visHoy').innerHTML = '<div class="vacio" style="grid-column:1/-1">No se pudo cargar. Probá de nuevo.</div>'; });
+  }
+
   /* ---------- Horarios ---------- */
   function cargarHorarios(){
     $('hEstado').textContent = 'Cargando…';
@@ -315,9 +389,60 @@
         <select class="${f.tipo?'':'falta'}" onchange="fotos[${i}].tipo=this.value;this.classList.toggle('falta',!this.value)" ${f.estado==='ok'?'disabled':''}>
           <option value="">Tipo…</option>${TIPOS.map(t => `<option ${t===f.tipo?'selected':''}>${t}</option>`).join('')}
         </select>
+        ${f.estado === 'ok' ? '' : `<button class="ia ${f.ia ? 'on' : ''}" onclick="toggleIA(${i})" ${f.iaCargando ? 'disabled' : ''}>
+          ${f.iaCargando ? '⏳ Emprolijando…' : f.ia ? '✨ Prolija · deshacer' : '✨ Fondo prolijo'}</button>`}
       </div>`).join('');
     actualizarPie();
   }
+  /* ---------- ✨ Fondo prolijo (IA que corre en el celu, gratis) ----------
+     Recorta la prenda y le pone fondo liso. No redibuja la prenda: colores y estampado quedan iguales.
+     Solo se aplica a las fotos que Pri elige. */
+  let quitarFondo = null;
+  async function cargarIA(){
+    if (!quitarFondo) {
+      const mod = await import('https://esm.sh/@imgly/background-removal@1');
+      quitarFondo = mod.removeBackground || mod.default;
+    }
+    return quitarFondo;
+  }
+  async function toggleIA(i){
+    const f = fotos[i];
+    if (f.ia) { f.ia = null; f.url = f.urlOriginal; pintarFotos(); return; }      // deshacer
+    f.iaCargando = true; pintarFotos();
+    if (!quitarFondo) toast('La primera vez tarda un poquito (descarga la IA) ⏳');
+    try {
+      const rm = await cargarIA();
+      const recorte = await rm(f.file, { model: 'isnet_quint8', output: { format: 'image/png' } });
+      const final = await componer(recorte, $('fondoIA').value);
+      f.urlOriginal = f.urlOriginal || f.url;
+      f.ia = final; f.url = URL.createObjectURL(final);
+    } catch (e) {
+      console.error(e); toast('No se pudo emprolijar esta foto 😕');
+    }
+    f.iaCargando = false; pintarFotos();
+  }
+  // Pone la prenda recortada centrada sobre un fondo liso, en formato de historia (9:16)
+  async function componer(png, color){
+    const im = await createImageBitmap(png);
+    const W = 1080, H = 1920, c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const x = c.getContext('2d');
+    x.fillStyle = color; x.fillRect(0, 0, W, H);
+    // recorta el borde transparente para centrar bien la prenda
+    const t = document.createElement('canvas'); t.width = im.width; t.height = im.height;
+    const tx = t.getContext('2d'); tx.drawImage(im, 0, 0);
+    const d = tx.getImageData(0, 0, im.width, im.height).data;
+    let x0 = im.width, y0 = im.height, x1 = 0, y1 = 0;
+    for (let yy = 0; yy < im.height; yy += 2) for (let xx = 0; xx < im.width; xx += 2) {
+      if (d[(yy * im.width + xx) * 4 + 3] > 20) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (yy < y0) y0 = yy; if (yy > y1) y1 = yy; }
+    }
+    if (x1 <= x0 || y1 <= y0) { x0 = 0; y0 = 0; x1 = im.width; y1 = im.height; }
+    const w = x1 - x0, h = y1 - y0, k = Math.min(W * 0.84 / w, H * 0.78 / h);
+    x.shadowColor = 'rgba(18,62,117,.18)'; x.shadowBlur = 40; x.shadowOffsetY = 18;
+    x.drawImage(t, x0, y0, w, h, (W - w * k) / 2, (H - h * k) / 2, w * k, h * k);
+    return await new Promise(ok => c.toBlob(ok, 'image/jpeg', 0.9));
+  }
+
   function quitarFoto(i){ URL.revokeObjectURL(fotos[i].url); fotos.splice(i, 1); pintarFotos(); }
   function precioATodas(){
     const v = $('precioTodas').value; if (!v) return;
@@ -368,7 +493,7 @@
   async function subirUna(f){
     f.estado = 'subiendo'; pintarFotos();
     try {
-      const data = await achicar(f.file);
+      const data = await achicar(f.ia || f.file);
       const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ accion: 'subir', clave: CLAVE, cat, precio: f.precio, tipo: f.tipo, data }) });
       const d = await r.json();
