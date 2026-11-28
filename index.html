@@ -4,12 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Vamo' Arriba · Directo de Uruguay</title>
-<meta name="version" content="32">
+<meta name="version" content="35">
 <meta name="description" content="Ropa directo de Uruguay. Sin seña, envíos a todo el país.">
 <meta property="og:title" content="Vamo' Arriba · Directo de Uruguay 🇺🇾">
 <meta property="og:description" content="Mirá el catálogo y armá tu pedido. Sin seña.">
-<meta property="og:image" content="logo.png">
+<meta property="og:image" content="https://vamoarriba0.github.io/logo.png">
+<meta property="og:url" content="https://vamoarriba0.github.io/">
+<meta property="og:type" content="website">
 <link rel="icon" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="theme-color" content="#5aa7e0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -62,6 +66,14 @@
   .volver{display:block;background:none;border:0;color:var(--azul);font-size:14px;font-weight:800;cursor:pointer;padding:0 0 10px;margin-top:-4px}
   .ver-combina{display:inline-block;margin-top:6px;border:0;background:var(--sol);color:var(--azul-osc);font-size:12px;font-weight:800;
     padding:5px 10px;border-radius:999px;cursor:pointer}
+  .nfotos{position:absolute;top:44px;left:8px;background:rgba(255,255,255,.95);color:var(--azul-osc);font-size:12px;font-weight:800;
+         padding:3px 8px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.15);cursor:pointer}
+  .flecha{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.9);
+          color:var(--azul);font-size:30px;font-weight:700;display:none;align-items:center;justify-content:center;cursor:pointer;padding-bottom:4px}
+  .flecha.izq{left:10px} .flecha.der{right:10px}
+  .vpuntos{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:7px}
+  .vpuntos i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.45)}
+  .vpuntos i.on{background:#fff}
   .btn.sec{background:#fff;color:var(--azul);border:2px solid var(--azul)}
   .barra-sup{padding:8px 14px 10px;background:#eaf4fc}
   .confianza{display:flex;flex-wrap:wrap;gap:6px}
@@ -275,6 +287,9 @@
   <button class="cerrar-x" aria-label="Cerrar">×</button>
   <img id="visorImg" alt="">
   <iframe id="visorVideo" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  <button class="flecha izq" id="vPrev" onclick="event.stopPropagation();moverFoto(-1)" aria-label="Anterior">‹</button>
+  <button class="flecha der" id="vNext" onclick="event.stopPropagation();moverFoto(1)" aria-label="Siguiente">›</button>
+  <div class="vpuntos" id="vPuntos"></div>
 </div>
 
 <!-- Agregar prenda -->
@@ -546,6 +561,7 @@
       <div class="card">
         <img class="foto" loading="lazy" src="${img(i.id,500)}" alt="" onclick="ver('${i.c}')">
         ${i.v ? '<span class="play">▶</span>' : ''}
+        ${i.f && i.f.length ? `<span class="nfotos" onclick="ver('${i.c}')">📷 ${i.f.length + 1}</span>` : ''}
         <button class="fav" onclick="favorito('${i.c}', this)" aria-label="Favorito">${favs.has(i.c) ? '❤️' : '🤍'}</button>
         ${i.p ? `<span class="precio">${fmt(i.p)}</span>` : ''}
         ${i.h ? `<span class="fuego">🔥 Pedida ${i.h} veces hoy</span>` : ''}
@@ -636,17 +652,40 @@
     if (capaAbierta) { ocultar(capaAbierta); capaAbierta = null; }
   });
 
+  let galeria = [], gPos = 0;
   function ver(c){
     const i = porCodigo[c];
+    galeria = i.v ? [] : [i.id, ...(i.f || [])]; gPos = 0;
     if (i.v) {
       $('visorImg').style.display = 'none'; $('visorVideo').style.display = 'block';
       $('visorVideo').src = `https://drive.google.com/file/d/${i.id}/preview`;
     } else {
       $('visorVideo').style.display = 'none'; $('visorImg').style.display = 'block';
-      $('visorImg').src = img(i.id, 1200);
+      mostrarFoto();
     }
     abrir('visor');
   }
+  function mostrarFoto(){
+    $('visorImg').src = img(galeria[gPos], 1200);
+    const varias = galeria.length > 1;
+    $('vPrev').style.display = $('vNext').style.display = varias ? 'flex' : 'none';
+    $('vPuntos').innerHTML = varias ? galeria.map((_, k) => `<i class="${k === gPos ? 'on' : ''}"></i>`).join('') : '';
+    galeria.slice(1).forEach(id => { new Image().src = img(id, 1200); });   // precarga
+  }
+  function moverFoto(d){
+    if (galeria.length < 2) return;
+    gPos = (gPos + d + galeria.length) % galeria.length; mostrarFoto();
+  }
+  (function(){                                   // deslizar con el dedo entre fotos
+    let x0 = null;
+    $('visorImg').addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    $('visorImg').addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) moverFoto(dx < 0 ? 1 : -1);
+    });
+    $('visorImg').addEventListener('click', e => { if (galeria.length > 1) { e.stopPropagation(); moverFoto(1); } });
+  })();
 
   /* ---------- Talles ---------- */
   const TABLAS = {

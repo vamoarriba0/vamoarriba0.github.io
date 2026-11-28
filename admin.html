@@ -6,6 +6,8 @@
 <meta name="robots" content="noindex">
 <title>Vamo' Arriba · Administración</title>
 <link rel="icon" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="theme-color" content="#5aa7e0">
 <style>
   :root{--azul:#1d5aa6;--azul-osc:#123e75;--celeste:#5aa7e0;--celeste-2:#9fcdf0;--celeste-claro:#eef6fc;--sol:#f5b800;--gris:#7b8798;--linea:#d6e5f3;--verde:#2e7d4f;--rojo:#c0392b}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -41,11 +43,15 @@
   .foto input:placeholder-shown{background:#fff8e1}
   .foto select{width:100%;border:0;border-top:1.5px solid var(--linea);padding:7px 4px;font-size:13px;font-weight:700;color:var(--azul-osc);background:#fff;text-align:center}
   .foto select.falta{background:#fff8e1}
+  .foto .unir{width:100%;border:0;border-top:1.5px solid var(--linea);background:#fff;color:var(--gris);font-size:11.5px;font-weight:800;padding:7px 2px;cursor:pointer}
+  .foto .unir.on{background:var(--celeste);color:#fff}
+  .foto.es-extra{border-style:dashed;border-color:var(--celeste)}
+  .extra-lbl{font-size:11.5px;font-weight:800;color:var(--azul);text-align:center;padding:9px 4px;border-top:1.5px solid var(--linea);background:var(--celeste-claro)}
   .foto .ia{width:100%;border:0;border-top:1.5px solid var(--linea);background:#fff;color:var(--azul);font-size:12px;font-weight:800;padding:7px 2px;cursor:pointer}
   .foto .ia.on{background:var(--sol);color:var(--azul-osc)}
   .sel{flex:1;border:1.5px solid var(--linea);border-radius:10px;padding:10px;font-size:15px;color:var(--azul-osc);background:#fff}
   .foto .x{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:16px;cursor:pointer}
-  .foto .estado{position:absolute;inset:0;bottom:104px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,.55)}
+  .foto .estado{position:absolute;inset:0;bottom:136px;display:flex;align-items:center;justify-content:center;font-size:30px;background:rgba(255,255,255,.55)}
   .foto.ok{border-color:var(--verde)} .foto.error{border-color:var(--rojo)}
   .pie{position:fixed;left:0;right:0;bottom:0;background:#fff;padding:12px 14px;box-shadow:0 -3px 12px rgba(18,62,117,.12);z-index:20}
   .progreso{height:8px;background:var(--celeste-claro);border-radius:99px;overflow:hidden;margin-bottom:8px;display:none}
@@ -381,14 +387,17 @@
   function pintarFotos(){
     $('zonaPrecios').style.display = fotos.length ? 'block' : 'none';
     $('grilla').innerHTML = fotos.map((f, i) => `
-      <div class="foto ${f.estado}">
+      <div class="foto ${f.estado} ${f.extra ? 'es-extra' : ''}">
         <img src="${f.url}" alt="">
         ${f.estado === 'ok' ? '<div class="estado">✅</div>' : f.estado === 'error' ? '<div class="estado">⚠️</div>' : f.estado === 'subiendo' ? '<div class="estado">⏳</div>' : ''}
         ${f.estado === 'ok' ? '' : `<button class="x" onclick="quitarFoto(${i})" aria-label="Quitar">×</button>`}
+        ${f.extra ? `<div class="extra-lbl">📷 Otra foto de la anterior</div>` : `
         <input type="number" inputmode="numeric" placeholder="$ precio" value="${f.precio}" oninput="fotos[${i}].precio=this.value;actualizarPie()" ${f.estado==='ok'?'disabled':''}>
         <select class="${f.tipo?'':'falta'}" onchange="fotos[${i}].tipo=this.value;this.classList.toggle('falta',!this.value)" ${f.estado==='ok'?'disabled':''}>
           <option value="">Tipo…</option>${TIPOS.map(t => `<option ${t===f.tipo?'selected':''}>${t}</option>`).join('')}
-        </select>
+        </select>`}
+        ${i > 0 && f.estado !== 'ok' ? `<button class="unir ${f.extra ? 'on' : ''}" onclick="fotos[${i}].extra=!fotos[${i}].extra;pintarFotos()">
+          ${f.extra ? '✓ Unida · separar' : '🔗 Es de la anterior'}</button>` : ''}
         ${f.estado === 'ok' ? '' : `<button class="ia ${f.ia ? 'on' : ''}" onclick="toggleIA(${i})" ${f.iaCargando ? 'disabled' : ''}>
           ${f.iaCargando ? '⏳ Emprolijando…' : f.ia ? '✨ Prolija · deshacer' : '✨ Fondo prolijo'}</button>`}
       </div>`).join('');
@@ -466,11 +475,13 @@
   }
   function actualizarPie(){
     const pend = fotos.filter(f => f.estado !== 'ok');
-    const sinPrecio = pend.filter(f => !f.precio).length;
+    const sinPrecio = pend.filter(f => !f.extra && !f.precio).length;
+    const prendas = pend.filter((f, k) => !f.extra || fotos.indexOf(f) === 0).length;
     $('pie').style.display = fotos.length && $('secSubir').style.display !== 'none' ? 'block' : 'none';
     $('avisoPie').textContent = !cat ? '☝️ Elegí la categoría arriba'
       : sinPrecio ? `${sinPrecio} sin precio (se suben igual y lo cargás después)` : '';
-    $('btnSubir').textContent = subiendo ? 'Subiendo…' : pend.length ? `Subir ${pend.length} foto${pend.length>1?'s':''} a ${cat || '…'}` : 'Listo ✅';
+    $('btnSubir').textContent = subiendo ? 'Subiendo…' : pend.length
+      ? `Subir ${prendas} prenda${prendas>1?'s':''}${pend.length > prendas ? ` (${pend.length} fotos)` : ''} a ${cat || '…'}` : 'Listo ✅';
     $('btnSubir').disabled = subiendo || !cat || !pend.length;
   }
 
@@ -490,31 +501,43 @@
     });
   }
 
-  async function subirUna(f){
+  async function subirUna(f, de){
     f.estado = 'subiendo'; pintarFotos();
     try {
       const data = await achicar(f.ia || f.file);
       const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ accion: 'subir', clave: CLAVE, cat, precio: f.precio, tipo: f.tipo, data }) });
+        body: JSON.stringify({ accion: 'subir', clave: CLAVE, cat, precio: f.precio, tipo: f.tipo, de: de || '', data }) });
       const d = await r.json();
       if (!d.ok) throw new Error(d.error || 'error');
-      f.estado = 'ok'; recordarPrecio(f.precio);
+      f.estado = 'ok'; f.codigo = d.codigo; if (!de) recordarPrecio(f.precio);
     } catch (e) { f.estado = 'error'; }
+  }
+  // Arma grupos: cada prenda con sus fotos extra ("Es de la anterior")
+  function grupos(){
+    const G = [];
+    fotos.forEach((f, k) => { if (!f.extra || k === 0 || !G.length) G.push([f]); else G[G.length - 1].push(f); });
+    return G.filter(g => g.some(f => f.estado !== 'ok'));
+  }
+  async function subirGrupo(g){
+    const [prin, ...extras] = g;
+    if (prin.estado !== 'ok') await subirUna(prin);
+    if (prin.estado !== 'ok') { extras.forEach(f => { if (f.estado !== 'ok') f.estado = 'error'; }); return; }
+    for (const f of extras) if (f.estado !== 'ok') await subirUna(f, prin.codigo);
   }
 
   async function subirTodo(){
     if (!cat || subiendo) return;
-    const cola = fotos.filter(f => f.estado !== 'ok');
+    const cola = grupos();
     if (!cola.length) return;
     subiendo = true; $('progreso').style.display = 'block'; actualizarPie();
     let hechas = 0;
     const total = cola.length;
     const trabajar = async () => {
       while (cola.length) {
-        const f = cola.shift();
-        await subirUna(f);
+        const g = cola.shift();
+        await subirGrupo(g);
         hechas++; $('barraProg').style.width = Math.round(hechas / total * 100) + '%';
-        $('avisoPie').textContent = `Subiendo ${hechas} de ${total}…`;
+        $('avisoPie').textContent = `Subiendo ${hechas} de ${total} prendas…`;
       }
     };
     await Promise.all([trabajar(), trabajar()]);   // de a 2 a la vez
